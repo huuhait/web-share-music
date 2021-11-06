@@ -56,25 +56,12 @@ import ListAlbum2 from '../components/Album2/ListAlbum2.vue'
     },
 })
 export default class Index extends Vue {
-    products: Product[] = []
 
     head() {
         return {
-            title: "Danh sách sản phẩm"
+            title: "Trang chủ"
         };
-    }
-
-    async fetch() {
-        try {
-            const {
-                data
-            } = await this.$axios(
-                'http://localhost:3000/api/v2/public/products'
-            )
-            this.products = data
-        } catch (error) {
-            return error
-        }
+        
     }
 }
 </script>
