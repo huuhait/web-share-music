@@ -10,9 +10,13 @@
             </a>
         </div>
         <div class="footer-control-item">
-            <a class="jp-play" style="display: inline-block">
-                <fa icon="play"></fa>
-
+            <a class="jp-play" style="display: inline-block" @click='setPlay'>
+                <div v-if="isPlay">
+                    <fa icon="pause"></fa>
+                </div>
+                <div v-else>
+                    <fa icon="play"></fa>
+                </div>
             </a>
         </div>
         <div class="footer-control-item">
@@ -27,12 +31,28 @@
             </a>
         </div>
     </div>
-    <div class="footer-progress">Bubble</div>
+    <div class="footer-progress">
+        <div class="footer-progress-timeLine">
+            <div class="footer-progress-timeLine-bg"></div>
+            <div :style="{'width': this.progressTimeLine() +'%'}" class="footer-progress-timeLine-detail">
+            </div>
+        </div>
+    </div>
     <div class="footer-time">
-        <div class="footer-time-start">00:00</div>
-        <div class="footer-time-end">00:00</div>
-        <div class="footer-volume">
-            <fa icon="volume-up"></fa>
+        <div class="footer-time-start">
+            <span>{{(Math.round(this.currentTime/60))}}</span>:<span>{{this.currentTime%60}}</span>
+        </div>
+        <span>/</span>
+        <div class="footer-time-end">
+            <span>{{(Math.round(this.totalTime/60))}}</span>:<span>{{this.totalTime%60}}</span>
+        </div>
+        <div class="footer-volume" @click="mute">
+            <div class='footer-volume-icon' v-if="isMute">
+                <fa icon="volume-up"></fa>
+            </div>
+            <div class='footer-volume-icon' v-else>
+                <fa icon="volume-mute"></fa>
+            </div>
 
             <div class="footer-volume-value"></div>
         </div>
@@ -50,11 +70,40 @@
 <script lang="ts">
 import {
     Vue,
-    Component
+    Component,
+    Prop
 } from 'vue-property-decorator';
 
 @Component
-export default class Footer extends Vue {}
+export default class Footer extends Vue {
+    _data: any;
+    @Prop() totalTime: number
+    @Prop() currentTime: number
+    @Prop() play: any
+    @Prop() mute: any
+
+    data() {
+        return {
+            isPlay: true,
+            isMute: true
+        }
+    }
+    mounted() {
+        console.log();
+    }
+    setPlay() {
+        this._data.isPlay = !this._data.isPlay
+        console.log(this._data.isPlay);
+        this.play()
+    }
+    setMute() {
+        this._data.isMute = !this._data.isMute
+        this.mute()
+    }
+    progressTimeLine() {
+        return this.currentTime / this.totalTime * 100
+    }
+}
 </script>
 
 <style lang="less">
@@ -106,6 +155,31 @@ export default class Footer extends Vue {}
         display: flex;
         justify-content: center;
         align-items: center;
+
+        &-timeLine {
+            width: 600px;
+            height: 2px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            display: block;
+
+            &-bg {
+                background-color: #eee;
+                width: 100%;
+                position: absolute;
+                height: 4px;
+                z-index: 1
+            }
+
+            &-detail {
+                background-color: #4cb6cb;
+                width: 0%;
+                position: absolute;
+                height: 4px;
+                z-index: 2;
+            }
+        }
     }
 
     &-time {
@@ -124,6 +198,10 @@ export default class Footer extends Vue {}
         .footer-volume {
             display: flex;
             align-items: center;
+
+            &-icon {
+                min-width: 20px;
+            }
 
             &-value {
                 width: 40px;

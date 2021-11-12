@@ -3,6 +3,7 @@
     <div class="new-song-list-item-avatar">
         <div class="overlay">
             <i class="fa fa-play-circle i-2x"></i>
+            <fa icon="play-circle"></fa>
         </div>
         <img src="../../static/a2.png" alt="" />
     </div>
@@ -105,13 +106,13 @@ export default class AlbumItem extends Vue {}
     display: none;
 }
 
-.overlay i {
+.overlay svg {
     z-index: 3;
     color: #545a5f;
     zoom: 2;
 }
 
-.overlay i:hover {
+.overlay svg:hover {
     color: #ffff;
 }
 

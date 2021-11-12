@@ -60,4 +60,5 @@ export default class Login extends Mixins(AuthMixin) {}
         text-align: center;
     }
 }
+
 </style>
