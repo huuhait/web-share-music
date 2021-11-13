@@ -1,6 +1,6 @@
 <template>
 <div class="container-product-item col-xs-6 col-sm-4 col-md-3 col-lg-2">
-    <div class="product-item">
+    <NuxtLink to="/listen-music-detail" class="product-item">
         <div class="product-item-over" style="position: relative">
             <div class="item-overlay active">
                 <div class="product-item-star">
@@ -27,7 +27,7 @@
                     </a>
                 </div>
             </div>
-            <a href="#">
+            <a href="">
                 <img src="../../static/p1.jpg" alt="" class="product-item-img" />
             </a>
         </div>
@@ -35,7 +35,7 @@
             <a href="#" class="item-title-top">Vivamus vel tincidunt libero</a>
             <a href="#" class="item-title-bot">Lauren Taylor</a>
         </div>
-    </div>
+    </NuxtLink>
 </div>
 </template>
 

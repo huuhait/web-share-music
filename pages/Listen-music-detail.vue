@@ -6,9 +6,10 @@
             <div class="container-listen-main">
                 <div class="container-listen-main-left">
                     <div class="container-listen-main-left-top">
-                        <a role="button" href="" class="container-listen-main-left-top-play">
-                            <i class="fas fa-pause"></i>
-                        </a>
+                        <div class="container-listen-main-left-top-play">
+                            <fa @click='rePlay' icon="pause" v-if="isPlay"></fa>
+                            <fa @click='rePlay' icon="play" v-else></fa>
+                        </div>
                         <div class="container-listen-main-left-top-name">
                             <div class="container-listen-main-left-top-name-song">『Eve - 呪術廻戦 / Kaikai Kitan』Jujutsu Kaisen OP full</div>
                             <div class="container-listen-main-left-top-name-author">unDer</div>
@@ -19,7 +20,7 @@
                         </div>
                     </div>
                     <div class="container-listen-main-left-bot">
-                        <div v-if="isloading">Loading ... </div>
+                        <div v-if="isloading" style="color: #fff; font-size: 40px;">Loading ... </div>
                         <div id="hoang">
                         </div>
                         <!-- <button @click="pre_skip" style="padding: 20px">pre_skip</button>
@@ -44,34 +45,31 @@
                     <div class="comment-form-react">
                         <div class="comment-form-react-left">
                             <div class="comment-form-item-left"><a href="">
-                                    <i class="fas fa-heart"></i>like
+                                    <fa icon="heart"></fa>Like
                                 </a></div>
                             <div class="comment-form-item-left"><a href="">
-                                    <i class="fas fa-retweet"></i>Report
+                                    <fa icon="retweet"></fa>Report
                                 </a></div>
                             <div class="comment-form-item-left"><a href="">
-                                    <i class="fas fa-share-square"></i>Share
+                                    <fa icon="share-square"></fa>Share
                                 </a></div>
-                            <div class="comment-form-item-left"><a href="">
+                            <!-- <div class="comment-form-item-left"><a href="">
                                     <i class="fas fa-link"></i> Copy link
                                 </a></div>
                             <div class="comment-form-item-left"><a href="">
                                     <i class="fas fa-ellipsis-h"></i>More
-                                </a></div>
+                                </a></div> -->
                         </div>
                         <div class="comment-form-react-right">
-                            <div class="comment-form-item-right"><a href="">
-                                    <i class="fas fa-play"></i>9,950
-
-                                </a></div>
-                            <div class="comment-form-item-right"><a href="">
-                                    <i class="fas fa-heart"></i>390
-
-                                </a></div>
-                            <div class="comment-form-item-right"><a href="">
-                                    <i class="fas fa-retweet"></i>99999
-                                </a></div>
-
+                            <div class="comment-form-item-right">
+                                <fa icon="play"></fa>9,950
+                            </div>
+                            <div class="comment-form-item-right">
+                                <fa icon="heart"></fa>390
+                            </div>
+                            <div class="comment-form-item-right">
+                                <fa icon="retweet"></fa>99999
+                            </div>
                         </div>
 
                     </div>
@@ -86,10 +84,10 @@
                                 </div>
                                 <div class="comment-detail-left-author-follow">
                                     <div class="comment-detail-left-author-follow-user">
-                                        <i class="fas fa-users"></i>99.999
+                                        <fa icon="users"></fa> 99.999
                                     </div>
                                     <div class="comment-detail-left-author-follow-button">
-                                        <i class="fas fa-user-plus"></i> Follow
+                                        <fa icon="user-plus"></fa> Follow
                                     </div>
                                 </div>
                             </div>
@@ -97,7 +95,7 @@
                         <div class="comment-detail-right">
                             <div class="comment">
                                 <div class="comment-count">
-                                    <i class="fas fa-comment-alt"></i>3.420 comments
+                                    <fa icon="comment-alt"></fa>3.420 comments
                                 </div>
                                 <div class="comment-list">
                                     <div class="comment-list-item">
@@ -191,76 +189,14 @@
                 </div>
                 <div class="container-listen-content-right">
                     <div class="container-listen-content-right-title">
-                        <i class="fab fa-soundcloud"></i> Related song
+                        <fa icon="soundcloud"></fa> Related song
                     </div>
-                    <div class="profile-container-content-right-info-song">
-                        <div class="profile-container-content-right-info-song-avatar">
-                            <img src="https://i1.sndcdn.com/artworks-000484267635-ttdf7e-t50x50.jpg" alt="">
-                        </div>
-                        <div class="profile-container-content-right-info-song-text">
-                            <div class="profile-container-content-right-info-song-text-name">MU</div>
-                            <div class="profile-container-content-right-info-song-text-author">Lullaby</div>
-                            <div class="profile-container-content-right-info-song-text-list">
-                                <div class="profile-container-content-right-info-song-text-list-item">
-                                    <i class="fas fa-play"></i>9,950
-                                </div>
-                                <div class="profile-container-content-right-info-song-text-list-item">
-                                    <i class="fas fa-heart"></i>390
-
-                                </div>
-                                <div class="profile-container-content-right-info-song-text-list-item">
-                                    <i class="fas fa-comment-alt"></i>200
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="profile-container-content-right-info-song">
-                        <div class="profile-container-content-right-info-song-avatar">
-                            <img src="https://i1.sndcdn.com/artworks-000484267635-ttdf7e-t50x50.jpg" alt="">
-                        </div>
-                        <div class="profile-container-content-right-info-song-text">
-                            <div class="profile-container-content-right-info-song-text-name">MU</div>
-                            <div class="profile-container-content-right-info-song-text-author">Lullaby</div>
-                            <div class="profile-container-content-right-info-song-text-list">
-                                <div class="profile-container-content-right-info-song-text-list-item">
-                                    <i class="fas fa-play"></i>9,950
-                                </div>
-                                <div class="profile-container-content-right-info-song-text-list-item">
-                                    <i class="fas fa-heart"></i>390
-
-                                </div>
-                                <div class="profile-container-content-right-info-song-text-list-item">
-                                    <i class="fas fa-comment-alt"></i>200
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="profile-container-content-right-info-song">
-                        <div class="profile-container-content-right-info-song-avatar">
-                            <img src="https://i1.sndcdn.com/artworks-000484267635-ttdf7e-t50x50.jpg" alt="">
-                        </div>
-                        <div class="profile-container-content-right-info-song-text">
-                            <div class="profile-container-content-right-info-song-text-name">MU</div>
-                            <div class="profile-container-content-right-info-song-text-author">Lullaby</div>
-                            <div class="profile-container-content-right-info-song-text-list">
-                                <div class="profile-container-content-right-info-song-text-list-item">
-                                    <i class="fas fa-play"></i>9,950
-                                </div>
-                                <div class="profile-container-content-right-info-song-text-list-item">
-                                    <i class="fas fa-heart"></i>390
-
-                                </div>
-                                <div class="profile-container-content-right-info-song-text-list-item">
-                                    <i class="fas fa-comment-alt"></i>200
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                   <list-song2/>
                 </div>
             </div>
         </div>
     </div>
-    <Footer :totalTime='this._data.totalTime' :currentTime='this._data.currentTime' :play='play' :mute='mute' />
+    <Footer :totalTime='this._data.totalTime' :currentTime='this._data.currentTime' :play='play' :mute='mute' muted='muted' />
 </div>
 </template>
 
@@ -271,11 +207,13 @@ import {
 } from 'vue-property-decorator'
 import Header from '../components/Header.vue'
 import Footer from '../components/Footer.vue'
+import ListSong2 from '../components/Song2/ListSong2.vue'
 
 @Component({
     components: {
         Header,
-        Footer
+        Footer,
+        ListSong2,
     },
 })
 
@@ -285,7 +223,8 @@ export default class Listen_music_detail extends Vue {
     wavesurfer: any
     muted: boolean = true
     currentTrack: number = 0
-
+    isPlay: boolean = true
+    isReplay: boolean = true
     myList: String[] = [
         '../KawakiWoAmeku-Minami-5862585.mp3',
         '../KaikaiKitan-Eve.mp3',
@@ -298,7 +237,6 @@ export default class Listen_music_detail extends Vue {
             totalTime: 0,
             currentTime: 0,
             isloading: true
-
         }
     }
     mounted() {
@@ -327,6 +265,13 @@ export default class Listen_music_detail extends Vue {
 
     play() {
         this.wavesurfer.playPause()
+        this.isPlay = !this.isPlay
+    }
+    rePlay() {
+        const wave = this.wavesurfer
+        wave.on('finish', () => {
+            wave.play([0])
+        });
     }
 
     pre_skip() {
@@ -344,28 +289,33 @@ export default class Listen_music_detail extends Vue {
 
     loadNextSong() {
         this.wavesurfer.destroy()
-
         this.createWavesuffer()
 
         const currentSong = this.currentTrack
+        const that = this
         this.wavesurfer.load(this.myList[currentSong]);
         this.wavesurfer.on('finish', () => {
-            this.loadNextSong();
+            if (that.isReplay) {
+                wave.play([0])
+            } else {
+                this.loadNextSong();
+            }
         });
+
         const wave = this.wavesurfer
 
-        wave.on('loading', function (x) {
-            console.log(x);
-        });
+        // wave.on('loading', function (x) {
+        //     console.log(x);
+        // });
         wave.on('ready', function () {
             wave.play();
+            console.log('aaa')
         });
         this._data.isloading = false
         wave.on('error', function (e: any) {
             console.warn(e);
         });
 
-        const that = this
         wave.on('audioprocess', function () {
             if (wave.isPlaying()) {
                 that._data.totalTime = Math.round(wave.getDuration())
@@ -383,9 +333,10 @@ export default class Listen_music_detail extends Vue {
     background-color: #f2f4f8;
     display: flex;
     justify-content: center;
+    flex-direction: row;
 
     .container-listen {
-        width: 80%;
+        width: 1200px;
         background-color: #fff;
 
         &-main {
@@ -414,9 +365,9 @@ export default class Listen_music_detail extends Vue {
                         height: 60px;
                         width: 60px;
 
-                        i {
+                        svg {
                             color: #fff;
-                            zoom: 2.4;
+                            zoom: 1.4;
                         }
                     }
 
@@ -487,8 +438,8 @@ export default class Listen_music_detail extends Vue {
                     color: #999;
                     margin-bottom: 10px;
 
-                    i {
-                        margin-right: 10px;
+                    svg {
+                        margin-right: 6px;
                         padding-left: 10px;
                     }
                 }
@@ -523,7 +474,7 @@ export default class Listen_music_detail extends Vue {
                                 margin-right: 20px;
                                 font-size: 14px;
 
-                                i {
+                                svg {
                                     margin-right: 6px;
                                     zoom: 0.8;
                                 }
@@ -588,7 +539,7 @@ export default class Listen_music_detail extends Vue {
 
                             &-name {
                                 font-size: 16px;
-                                color: #333;
+                                color: #333 !important;
                                 line-height: 30px;
                             }
 
@@ -599,7 +550,7 @@ export default class Listen_music_detail extends Vue {
                                 &-user {
                                     font-size: 14px;
 
-                                    i {
+                                    svg {
                                         margin-right: 10px;
                                     }
                                 }
@@ -612,7 +563,7 @@ export default class Listen_music_detail extends Vue {
                                     font-size: 12px;
                                     color: #fff;
 
-                                    i {
+                                    svg {
                                         margin-right: 6px;
                                     }
                                 }
@@ -628,7 +579,7 @@ export default class Listen_music_detail extends Vue {
                             &-count {
                                 margin-bottom: 20px;
 
-                                i {
+                                svg {
                                     margin-right: 10px;
                                 }
                             }
@@ -679,6 +630,16 @@ export default class Listen_music_detail extends Vue {
                     &-right {
                         display: flex;
                         align-items: center;
+                        color: #333 !important;
+
+                        .comment-form-item-right {
+                            margin-left: 16px;
+                            color: #333 !important;
+
+                            svg {
+                                margin-right: 6px;
+                            }
+                        }
 
                         .comment-form-item-left {
                             padding: 4px 10px;
@@ -688,25 +649,14 @@ export default class Listen_music_detail extends Vue {
 
                             a {
                                 text-decoration: none;
-                                color: #333;
+                                color: #000;
 
-                                i {
+                                svg {
                                     margin-right: 6px;
                                 }
                             }
                         }
 
-                        .comment-form-item-right {
-                            a {
-                                text-decoration: none;
-                                color: #333;
-                                margin-left: 16px;
-
-                                i {
-                                    margin-right: 6px;
-                                }
-                            }
-                        }
                     }
                 }
             }

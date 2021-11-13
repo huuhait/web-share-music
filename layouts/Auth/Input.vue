@@ -1,11 +1,22 @@
 <template>
-<div class="auth-input">
-    <div v-if="label" class="h-8 leading-9">
-        {{ label }} <span v-if="required" class="auth-input-label-required"></span>
+<div class="form-block">
+    <div v-if="label">
+        {{ label }} <span v-if="required"></span>
     </div>
-    <input v-if="type == 'password'" :value="value" :type="type" :placeholder="placeholder" @input="event => $emit('input', event.target.value)" class="min-w-full" />
-    <input v-else :value="value" :type="type" :placeholder="placeholder" @input="event => $emit('input',  event.target.value)" class="min-w-full" />
-    <div v-if="error" class="auth-input-error">{{ error }}</div>
+    <input 
+        v-if="type == 'password'"
+        :value="value" :type="type"
+        :placeholder="placeholder" 
+        @input="event => $emit('input', event.target.value)" 
+        class="form-control" 
+    />
+    <input v-else 
+        :value="value" 
+        :type="type" 
+        :placeholder="placeholder" 
+        @input="event => $emit('input',  event.target.value)" 
+        class="form-control" />
+    <div v-if="error" >{{ error }}</div>
 </div>
 </template>
 
@@ -28,23 +39,47 @@ export default class Input extends Vue {
 </script>
 
 <style lang="less">
-.auth-input {
-    &-label {
-        &-required {
-            color: rgb(235, 62, 62);
-        }
+.form-block {
+    margin: 18px 0;
+
+    label {
+        margin-bottom: 8px;
+        display: inline-block;
+        font-size: 16px;
     }
 
-    &-error {
-        height: 20px;
-        line-height: 20px;
-        margin-left: 8px;
-        color: rgb(235, 62, 62);
+    .form-control {
+        padding: 0 12px;
+        width: 100%;
+        height: 46px;
+        display: block;
+        background-color: #f5f7f9;
+        border: 1px solid #fff;
+        border-radius: 5px;
+        transition: all 0.3s;
     }
 
-    input {
-        padding: 6px 14px;
-        background-color: #e8f0fe;
+    .form-control:hover {
+        border: 1px solid #6039de;
+    }
+
+    .form-control:focus {
+        border: 1px solid #6039de;
+        outline: none;
+    }
+
+    .btn {
+        margin-top: 40px;
+        background-color: #7755e5;
+        border: none;
+        color: #fff;
+        transition: all 0.3s;
+    }
+
+    .btn:hover {
+        border: none;
+        cursor: pointer;
+        background-color: rgba(119, 85, 229, 0.85);
     }
 }
 </style>

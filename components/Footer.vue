@@ -46,8 +46,8 @@
         <div class="footer-time-end">
             <span>{{(Math.round(this.totalTime/60))}}</span>:<span>{{this.totalTime%60}}</span>
         </div>
-        <div class="footer-volume" @click="mute">
-            <div class='footer-volume-icon' v-if="isMute">
+        <div class="footer-volume" @click="setMute">
+            <div class='footer-volume-icon' v-if="this.muted">
                 <fa icon="volume-up"></fa>
             </div>
             <div class='footer-volume-icon' v-else>
@@ -81,6 +81,7 @@ export default class Footer extends Vue {
     @Prop() currentTime: number
     @Prop() play: any
     @Prop() mute: any
+    @Prop() muted: any
 
     data() {
         return {
@@ -103,6 +104,8 @@ export default class Footer extends Vue {
     progressTimeLine() {
         return this.currentTime / this.totalTime * 100
     }
+
+    
 }
 </script>
 

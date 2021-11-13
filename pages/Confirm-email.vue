@@ -1,19 +1,13 @@
 <template>
 <div class="login-block">
     <div class="login-main">
-        <div class="login-another">
-            <p class="register">
-                Don't have an account yet? <a href="">Create one</a>
-            </p>
-        </div>
-        <AuthForm title="Đăng nhập" @submit.prevent="login">
-            <AuthInput v-model="email" label="Email" :required="true" />
-            <AuthInput v-model="password" label="Password" type="password" :required="true" />
+        <AuthForm title="Xác nhậm email" @submit.prevent="confirmEmail">
+            <AuthInput v-model="email" label="Email" type="email" :required="true" />
+            <AuthInput v-model="code" label="Code" :required="true" />
             <div class="auth-form-footer">
                 <div class="form-block">
                     <input class="form-control btn" type="submit" name="submit" value="Sign In" />
                 </div>
-                <a href="" class="forgot">Forgot Password?</a>
             </div>
         </AuthForm>
     </div>
@@ -34,7 +28,7 @@ import {
 @Component({
     components: {},
 })
-export default class Login extends Mixins(AuthMixin) {}
+export default class Confirm_Email extends Mixins(AuthMixin) {}
 </script>
 
 <style lang="less">

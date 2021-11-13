@@ -6,14 +6,24 @@
                 Don't have an account yet? <a href="">Create one</a>
             </p>
         </div>
-        <AuthForm title="Đăng nhập" @submit.prevent="login">
-            <AuthInput v-model="email" label="Email" :required="true" />
+        <AuthForm title="Đăng ký" @submit.prevent="register">
+            <AuthInput v-model="first_name" label="First name" type="text" :required="true" />
+            <AuthInput v-model="last_name" label="Last name" type="text" :required="true" />
+            <AuthInput v-model="email" label="Email" type="email" :required="true" />
             <AuthInput v-model="password" label="Password" type="password" :required="true" />
             <div class="auth-form-footer">
                 <div class="form-block">
                     <input class="form-control btn" type="submit" name="submit" value="Sign In" />
                 </div>
-                <a href="" class="forgot">Forgot Password?</a>
+            </div>
+        </AuthForm>
+        <AuthForm title="Xác nhậm email" @submit.prevent="confirmEmail">
+            <AuthInput v-model="email" label="Email" type="email" :required="true" />
+            <AuthInput v-model="code" label="Code" :required="true" />
+            <div class="auth-form-footer">
+                <div class="form-block">
+                    <input class="form-control btn" type="submit" name="submit" value="Sign In" />
+                </div>
             </div>
         </AuthForm>
     </div>
@@ -34,7 +44,7 @@ import {
 @Component({
     components: {},
 })
-export default class Login extends Mixins(AuthMixin) {}
+export default class Register extends Mixins(AuthMixin) {}
 </script>
 
 <style lang="less">

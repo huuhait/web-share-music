@@ -1,10 +1,10 @@
 <template>
 <header class="header">
     <div class="header-logo">
-        <a href="" class="header-logo-link">
+        <NuxtLink to="./" class="header-logo-link">
             <i class="fas fa-headphones-alt"></i>
             <fa icon="headphones"></fa>
-        </a>
+        </NuxtLink>
     </div>
     <form class="header-form" role="search">
         <div class="header-form-search">
@@ -27,12 +27,24 @@
                 </a>
             </li>
             <li class="header-right-user">
-                <a href="#" class="header-right-user-link" data-toggle="dropdown">
-                    John.Smith <b class="caret"></b>
-                    <span class="">
+                <div class="header-right-user-link" data-toggle="dropdown">
+                    {{user.first_name + '' + user.last_name}}
+                    <!-- <b class="caret"></b> -->
+                    <span>
                         <img src="../static/a2.png" alt="..." />
                     </span>
-                </a>
+                    <ul class="header__navbar-user-menu">
+                        <li class="header__navbar-user-item">
+                            <!-- <NuxtLink to="/profile">Tài khoản của tôi</NuxtLink> -->
+                        </li>
+                         <li class="header__navbar-user-item header__navbar-user-item--separate">
+                            <NuxtLink to="/profile" class="header__navbar-user-item-link">Tài khoản của tôi</NuxtLink>
+                        </li>
+                        <li class="header__navbar-user-item header__navbar-user-item--separate">
+                            <div class="header__navbar-user-item-link" @click="logout">Đăng xuất</div>
+                        </li>
+                    </ul>
+                </div>
             </li>
         </ul>
     </div>
@@ -44,9 +56,24 @@ import {
     Vue,
     Component
 } from 'vue-property-decorator';
+import store from "../controllers/store";
 
 @Component
-export default class Header extends Vue {}
+export default class Header extends Vue {
+    user: any = '';
+
+    data() {
+        this.user = store.value.user
+        return {
+            user: this.user
+        }
+    }
+
+    async logout() {
+      await this.$axios.post('http://localhost:3000/api/v2/identity/logout');
+      console.log('logout')
+    }
+}
 </script>
 
 <style lang="less">
@@ -119,16 +146,84 @@ export default class Header extends Vue {}
                     align-items: center;
                     color: #545a5f;
                     font-size: 14px;
+                    position: relative;
 
-                    .caret {
-                        display: block;
-                        width: 0;
-                        height: 0;
-                        margin-left: 2px;
-                        border-top: 4px solid;
-                        border-right: 4px solid transparent;
-                        border-left: 4px solid transparent;
+                    .header__navbar-user-menu {
+                        position: absolute;
+                        padding-left: 0;
+                        top: calc(100% + 6px);
+                        right: 20px;
+                        border-radius: 2px;
+                        width: 160px;
+                        background-color: #fff;
+                        list-style: none;
+                        box-shadow: 0 1px 2px #e0e0e0;
+                        z-index: 4;
+                        font-size: 14px;
+                        display: none;
+
+                        .header__navbar-user-item--separate {
+                            border-top: 1px solid rgba(0, 0, 0, 0.05);
+                        }
+
+                        .header__navbar-user-item {
+                            z-index: 5;
+
+                            &-link {
+                                text-decoration: none;
+                                color: #000;
+                                font-size: 14px;
+                                padding: 4px 16px;
+                                display: block;
+                                cursor: pointer;
+                            }
+
+                            &-link:first-child {
+                                border-bottom-left-radius: 2px;
+                                border-bottom-right-radius: 2px;
+                            }
+
+                            &-link:last-child {
+                                border-top-left-radius: 2px;
+                                border-top-right-radius: 2px;
+                            }
+
+                            &-link:last-child:hover {
+                                background-color: #f8f8f8;
+                            }
+                        }
                     }
+
+                    .header__navbar-user-menu::before {
+                        content: "";
+                        border-width: 20px 25px;
+                        border-style: solid;
+                        border-color: transparent transparent #fff transparent;
+                        position: absolute;
+                        top: -30px;
+                        right: 0;
+                        z-index: -1;
+                    }
+
+                    .header__navbar-user-menu::after {
+                        content: "";
+                        display: block;
+                        position: absolute;
+                        top: -8px;
+                        right: 0;
+                        width: 56%;
+                        height: 8px;
+                    }
+
+                    // .caret {
+                    //     display: block;
+                    //     width: 0;
+                    //     height: 0;
+                    //     margin-left: 2px;
+                    //     border-top: 4px solid;
+                    //     border-right: 4px solid transparent;
+                    //     border-left: 4px solid transparent;
+                    // }
 
                     b {
                         font-weight: bold;
@@ -144,11 +239,15 @@ export default class Header extends Vue {}
                         }
                     }
                 }
+
+                &-link:hover .header__navbar-user-menu {
+                    display: block;
+                }
             }
 
-            .header-right-user:hover {
-                background-color: #edf2f3;
-            }
+            // .header-right-user:hover {
+            //     background-color: #edf2f3;
+            // }
         }
     }
 

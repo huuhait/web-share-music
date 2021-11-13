@@ -1,9 +1,9 @@
 <template>
 <div class="top-song-list">
-    <AlbumItem2 />
-    <AlbumItem2 />
-    <AlbumItem2 />
-    <AlbumItem2 />
+    <SongItem2 />
+    <SongItem2 />
+    <SongItem2 />
+    <SongItem2 />
 </div>
 </template>
 
@@ -12,13 +12,13 @@ import {
     Vue,
     Component
 } from 'vue-property-decorator';
-import AlbumItem2 from './AlbumItem2.vue';
+import SongItem2 from './SongItem2.vue';
 @Component({
     components: {
-        AlbumItem2
+        SongItem2
     }
 })
-export default class ListAlbum2 extends Vue {}
+export default class ListSong2 extends Vue {}
 </script>
 
 <style lang="less">
