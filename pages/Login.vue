@@ -37,7 +37,7 @@ import {
 export default class Login extends Mixins(AuthMixin) {}
 </script>
 
-<style lang="less">
+<style lang="less" >
 html {
     background: url('../static/background_login.jpg') no-repeat;
     background-size: cover;

@@ -2,7 +2,7 @@
 <div class="login-block">
     <div class="login-main">
         <AuthForm title="Xác nhậm email" @submit.prevent="confirmEmail">
-            <AuthInput v-model="email" label="Email" type="email" :required="true" />
+            <AuthInput v-model="email" label="Email" type="email" :required="true" value='email'/>
             <AuthInput v-model="code" label="Code" :required="true" />
             <div class="auth-form-footer">
                 <div class="form-block">
@@ -23,12 +23,22 @@ import {
 
 import {
     AuthMixin
-} from '../mixins/auth'
+} from '@/mixins/auth'
+import store from "@/controllers/store";
 
 @Component({
     components: {},
 })
-export default class Confirm_Email extends Mixins(AuthMixin) {}
+export default class Confirm_Email extends Mixins(AuthMixin) {
+    email: any = '';
+
+    data() {
+        this.email = store.value.email
+        return {
+            email: this.email
+        }
+    }
+}
 </script>
 
 <style lang="less">
@@ -60,7 +70,7 @@ html {
 
         .login-another {
             .register {
-                margin-bottom: 80px;
+                margin-bottom: 40px;
                 text-align: right;
                 font-size: 14px;
             }

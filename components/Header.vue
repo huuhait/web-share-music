@@ -28,16 +28,29 @@
             </li>
             <li class="header-right-user">
                 <div class="header-right-user-link" data-toggle="dropdown">
-                    {{user.first_name + '' + user.last_name}}
+                    {{user && user.first_name + '' + user.last_name}}
                     <!-- <b class="caret"></b> -->
                     <span>
-                        <img src="../static/a2.png" alt="..." />
+                        <img src="../static/a2.png" alt="..." v-if="user" />
+                        <img src="../static/Placeholder.jpg" alt="..." v-else />
                     </span>
-                    <ul class="header__navbar-user-menu">
+                    <ul class="header__navbar-user-menu" v-if="!user">
                         <li class="header__navbar-user-item">
                             <!-- <NuxtLink to="/profile">Tài khoản của tôi</NuxtLink> -->
                         </li>
-                         <li class="header__navbar-user-item header__navbar-user-item--separate">
+                        <li class="header__navbar-user-item header__navbar-user-item--separate">
+                            <NuxtLink to="/login" class="header__navbar-user-item-link">Đăng nhập</NuxtLink>
+                        </li>
+                        <li class="header__navbar-user-item header__navbar-user-item--separate">
+                            <NuxtLink to="/register" class="header__navbar-user-item-link">Đăng ký</NuxtLink>
+
+                        </li>
+                    </ul>
+                    <ul class="header__navbar-user-menu" v-else>
+                        <li class="header__navbar-user-item">
+                            <!-- <NuxtLink to="/profile">Tài khoản của tôi</NuxtLink> -->
+                        </li>
+                        <li class="header__navbar-user-item header__navbar-user-item--separate">
                             <NuxtLink to="/profile" class="header__navbar-user-item-link">Tài khoản của tôi</NuxtLink>
                         </li>
                         <li class="header__navbar-user-item header__navbar-user-item--separate">
@@ -61,6 +74,7 @@ import store from "../controllers/store";
 @Component
 export default class Header extends Vue {
     user: any = '';
+    $axios: any;
 
     data() {
         this.user = store.value.user
@@ -69,9 +83,10 @@ export default class Header extends Vue {
         }
     }
 
-    async logout() {
-      await this.$axios.post('http://localhost:3000/api/v2/identity/logout');
-      console.log('logout')
+    async logout() {    
+        await this.$axios.delete('http://localhost:3000/api/v2/identity/session');
+        store.value.user = ""
+        this.user = store.value.user
     }
 }
 </script>
@@ -147,12 +162,12 @@ export default class Header extends Vue {
                     color: #545a5f;
                     font-size: 14px;
                     position: relative;
+                    justify-content: flex-end;
 
                     .header__navbar-user-menu {
                         position: absolute;
                         padding-left: 0;
                         top: calc(100% + 6px);
-                        right: 20px;
                         border-radius: 2px;
                         width: 160px;
                         background-color: #fff;
@@ -245,9 +260,6 @@ export default class Header extends Vue {
                 }
             }
 
-            // .header-right-user:hover {
-            //     background-color: #edf2f3;
-            // }
         }
     }
 

@@ -17,7 +17,7 @@
                 </div>
             </div>
         </AuthForm>
-        <AuthForm title="Xác nhậm email" @submit.prevent="confirmEmail">
+        <!-- <AuthForm title="Xác nhậm email" @submit.prevent="confirmEmail">
             <AuthInput v-model="email" label="Email" type="email" :required="true" />
             <AuthInput v-model="code" label="Code" :required="true" />
             <div class="auth-form-footer">
@@ -25,7 +25,7 @@
                     <input class="form-control btn" type="submit" name="submit" value="Sign In" />
                 </div>
             </div>
-        </AuthForm>
+        </AuthForm> -->
     </div>
 </div>
 </template>
@@ -76,7 +76,7 @@ html {
 
         .login-another {
             .register {
-                margin-bottom: 80px;
+                margin-bottom: 40px;
                 text-align: right;
                 font-size: 14px;
             }

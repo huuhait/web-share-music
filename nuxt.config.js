@@ -16,18 +16,13 @@ export default {
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [
-    '~/assets/css/main.css',
-  ],
+  css: ['~/assets/css/main.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: ['~/plugins/route'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
-  components: [
-    '~/components',
-    '~/layouts'
-  ],
+  components: ['~/components', '~/layouts'],
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
@@ -54,6 +49,27 @@ export default {
     '@nuxtjs/pwa',
     // https://go.nuxtjs.dev/content
     '@nuxt/content',
+    '@nuxtjs/i18n',
+    {
+      strategy: 'prefix_except_default',
+      locales: [
+        {
+          code: 'en',
+          name: 'English',
+          file: 'en-US/index.ts',
+        },
+      ],
+      lazy: true,
+      defaultLocale: 'en',
+      langDir: 'lang/',
+      detectBrowserLanguage: {
+        useCookie: true,
+        cookieKey: 'learn_i18n',
+        redirectOn: 'root', // recommended
+        alwaysRedirect: true,
+        cookieCrossOrigin: true,
+      },
+    },
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -72,6 +88,10 @@ export default {
     manifest: {
       lang: 'en',
     },
+  },
+
+  layout(context) {
+    return 'home', 'listen-music-detail'
   },
 
   // Content module configuration: https://go.nuxtjs.dev/config-content

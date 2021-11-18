@@ -1,6 +1,5 @@
 <template>
 <div>
-    <Header />
     <div class="container">
         <div class="profile-container">
             <div class="profile-container-banner">
@@ -12,11 +11,12 @@
                         {{user.first_name + '' + user.last_name}}
                     </div>
                     <div class="profile-container-banner-upload">
-                        <label for="input-file">
+                        <NuxtLink to="/update-profile">Upload your profile</NuxtLink>
+                        <!-- <label for="input-file">
                             <i class="fas fa-camera"></i>
-                            Upload header image
-                        </label>
-                        <input id="input-file" type="file" style="width:200px">
+                            Upload your profile
+                        </label> -->
+                        <!-- <input id="input-file" type="file" style="width:200px"> -->
                     </div>
                 </div>
             </div>
@@ -144,7 +144,6 @@
             </div>
         </div>
     </div>
-    <Footer :totalTime='this._data.totalTime' :currentTime='this._data.currentTime' :play='play' :mute='mute' />
 </div>
 </template>
 
@@ -165,11 +164,16 @@ import store from "../controllers/store";
 })
 
 export default class Profile extends Vue {
+    layout(context: any) {
+        return 'music'
+    }
     user: any = '';
 
     data() {
-      this.user = store.value.user  
-      return {user: this.user}
+        this.user = store.value.user
+        return {
+            user: this.user
+        }
     }
 }
 </script>

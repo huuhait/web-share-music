@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "jsx": "preserve",
     "target": "ES2018",
     "module": "ESNext",
     "moduleResolution": "Node",
@@ -9,12 +10,15 @@
       "DOM"
     ],
     "esModuleInterop": true,
+    "strictPropertyInitialization": false,
+    "jsxFactory": "VueTsxSupport",
     "allowJs": true,
     "sourceMap": true,
+    "skipLibCheck": true,
     "strict": true,
+    "allowSyntheticDefaultImports": true,
     "noEmit": true,
     "experimentalDecorators": true,
-    "strictPropertyInitialization": false,
     "baseUrl": ".",
     "paths": {
       "~/*": [
@@ -25,10 +29,11 @@
       ]
     },
     "types": [
+      "@nuxtjs/i18n",
       "@nuxt/types",
       "@nuxtjs/axios",
       "@nuxt/content",
-      "@types/node",
+      "@types/node"
     ]
   },
   "exclude": [
@@ -37,3 +42,4 @@
     "dist"
   ]
 }
+

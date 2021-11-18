@@ -10,7 +10,8 @@
 <script lang="ts">
 import {
     Vue,
-    Component
+    Component,
+    Prop
 } from 'vue-property-decorator';
 import SongItem2 from './SongItem2.vue';
 @Component({
@@ -18,7 +19,8 @@ import SongItem2 from './SongItem2.vue';
         SongItem2
     }
 })
-export default class ListSong2 extends Vue {}
+export default class ListSong2 extends Vue {
+}
 </script>
 
 <style lang="less">

@@ -1,6 +1,5 @@
 <template>
 <div>
-    <Header />
     <div class="container">
         <div class="container-listen">
             <div class="container-listen-main">
@@ -21,11 +20,8 @@
                     </div>
                     <div class="container-listen-main-left-bot">
                         <div v-if="isloading" style="color: #fff; font-size: 40px;">Loading ... </div>
-                        <div id="hoang">
+                        <div id="hoang2">
                         </div>
-                        <!-- <button @click="pre_skip" style="padding: 20px">pre_skip</button>
-                        <button @click="next_skip" style="padding: 20px">next_skip</button>
-                        <button @click="mute" style="padding: 20px">mute</button> -->
                     </div>
                 </div>
                 <div class="container-listen-main-right">
@@ -140,48 +136,6 @@
                                         </div>
                                         <div class="comment-list-item-detail-time">1 hours ago</div>
                                     </div>
-                                    <div class="comment-list-item">
-                                        <div class="comment-list-item-avatar">
-                                            <img src="https://i1.sndcdn.com/avatars-28i9bpl5bABTzuP4-R5RPIQ-t500x500.jpg" alt="">
-                                        </div>
-                                        <div class="comment-list-item-detail">
-                                            <div class="comment-list-item-detail-top">
-                                                <div class="comment-list-item-detail-top-username">Hoang Dang</div>
-                                            </div>
-                                            <div class="comment-list-item-detail-bot">
-                                                Hoang dep trai vl
-                                            </div>
-                                        </div>
-                                        <div class="comment-list-item-detail-time">1 hours ago</div>
-                                    </div>
-                                    <div class="comment-list-item">
-                                        <div class="comment-list-item-avatar">
-                                            <img src="https://i1.sndcdn.com/avatars-28i9bpl5bABTzuP4-R5RPIQ-t500x500.jpg" alt="">
-                                        </div>
-                                        <div class="comment-list-item-detail">
-                                            <div class="comment-list-item-detail-top">
-                                                <div class="comment-list-item-detail-top-username">Hoang Dang</div>
-                                            </div>
-                                            <div class="comment-list-item-detail-bot">
-                                                Hoang dep trai vl
-                                            </div>
-                                        </div>
-                                        <div class="comment-list-item-detail-time">1 hours ago</div>
-                                    </div>
-                                    <div class="comment-list-item">
-                                        <div class="comment-list-item-avatar">
-                                            <img src="https://i1.sndcdn.com/avatars-28i9bpl5bABTzuP4-R5RPIQ-t500x500.jpg" alt="">
-                                        </div>
-                                        <div class="comment-list-item-detail">
-                                            <div class="comment-list-item-detail-top">
-                                                <div class="comment-list-item-detail-top-username">Hoang Dang</div>
-                                            </div>
-                                            <div class="comment-list-item-detail-bot">
-                                                Hoang dep trai vl
-                                            </div>
-                                        </div>
-                                        <div class="comment-list-item-detail-time">1 hours ago</div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -191,12 +145,11 @@
                     <div class="container-listen-content-right-title">
                         <fa icon="soundcloud"></fa> Related song
                     </div>
-                   <list-song2/>
+                    <list-song2 />
                 </div>
             </div>
         </div>
     </div>
-    <Footer :totalTime='this._data.totalTime' :currentTime='this._data.currentTime' :play='play' :mute='mute' muted='muted' />
 </div>
 </template>
 
@@ -208,7 +161,6 @@ import {
 import Header from '../components/Header.vue'
 import Footer from '../components/Footer.vue'
 import ListSong2 from '../components/Song2/ListSong2.vue'
-
 @Component({
     components: {
         Header,
@@ -218,25 +170,49 @@ import ListSong2 from '../components/Song2/ListSong2.vue'
 })
 
 export default class Listen_music_detail extends Vue {
+    layout(context) {
+        return 'music'
+    }
+
     private _data: any
     Wavesurfer: any
     wavesurfer: any
+    isPlay: boolean = false
     muted: boolean = true
-    currentTrack: number = 0
-    isPlay: boolean = true
-    isReplay: boolean = true
-    myList: String[] = [
-        '../KawakiWoAmeku-Minami-5862585.mp3',
-        '../KaikaiKitan-Eve.mp3',
-        '../IroKousuiHorimiyaOpening-YohKamiyama-7026438.mp3',
-        '../CryBabyTokyoRevengersOpening-OfficialHigeDandism-7014853.mp3',
-        '../Lost In Paradise (Jujutsu Kaisen Ending) - ALI, AKLO.mp3'
+    isReplay: boolean = false
+    isShuffle: boolean = false
+    myList: any[] = [{
+            id: 0,
+            name: "Sài Gòn Đâu Có Lạnh",
+            image: "artworks-3Tvthj5szuGw9XFz-g8FzrA-t500x500.jpg",
+            url: '../TaiNhacHay.Biz - Sài Gòn Đâu Có Lạnh.mp3'
+        },
+        {
+            id: 1,
+            name: "IroKousuiHorimiyaOpening",
+            image: "artworks-ipuUfyuMU4hdtXgz-xH27SQ-t500x500.jpg",
+            url: '../IroKousuiHorimiyaOpening-YohKamiyama-7026438.mp3'
+        },
+        {
+            id: 2,
+            name: "CryBabyTokyoRevengersOpening",
+            image: "artworks-Mlg3wB4sTkBztUs8-JrTmFQ-t200x200.jpg",
+            url: '../CryBabyTokyoRevengersOpening-OfficialHigeDandism-7014853.mp3'
+        },
     ]
+    // '../TaiNhacHay.Biz - Sài Gòn Đâu Có Lạnh.mp3',
+    // '../KawakiWoAmeku-Minami-5862585.mp3',
+    // '../KaikaiKitan-Eve.mp3',
+    // '../IroKousuiHorimiyaOpening-YohKamiyama-7026438.mp3',
+    // '../CryBabyTokyoRevengersOpening-OfficialHigeDandism-7014853.mp3',
+    // '../Lost In Paradise (Jujutsu Kaisen Ending) - ALI, AKLO.mp3'
     data() {
         return {
             totalTime: 0,
             currentTime: 0,
-            isloading: true
+            isloading: true,
+            progressTimeLine: 0,
+            currentTrack: 0
         }
     }
     mounted() {
@@ -247,83 +223,104 @@ export default class Listen_music_detail extends Vue {
         this.loadNextSong()
     }
 
+    progress() {
+        this.wavesurfer.seekAndCenter(this._data.progressTimeLine / 100)
+    }
     createWavesuffer() {
+        this._data.isloading = true
         this.wavesurfer = this.Wavesurfer.create({
-            container: '#hoang',
+            container: '#hoang2',
             waveColor: "#eee",
             progressColor: "#4cb6cb",
             cursorColor: "#4cb6cb",
             cursorWidth: 0,
-            barWidth: 3,
-            barRadius: 3,
-            normalize: true,
-            partialRender: true,
-            responsive: true,
-            hideCursor: true
+            barWidth: 4,
+            barRadius: 2,
         });
     }
 
     play() {
-        this.wavesurfer.playPause()
         this.isPlay = !this.isPlay
+        this.wavesurfer.playPause()
     }
     rePlay() {
-        const wave = this.wavesurfer
-        wave.on('finish', () => {
-            wave.play([0])
-        });
+        this.isReplay = !this.isReplay
     }
-
+    shuffle() {
+        this.isShuffle = !this.isShuffle
+    }
     pre_skip() {
         this.wavesurfer.skipBackward(5)
     }
-
     next_skip() {
         this.wavesurfer.skipForward(5)
     }
-
+    pre_song() {
+        if (this._data.currentTrack > 0) {
+            this._data.currentTrack = this._data.currentTrack - 1
+            this.loadNextSong();
+        } else {
+            this.wavesurfer.seekAndCenter(0)
+        }
+    }
+    next_song() {
+        this._data.currentTrack = this._data.currentTrack + 1
+        this.loadNextSong();
+    }
     mute() {
         this.wavesurfer.setMute(this.muted)
         this.muted = !this.muted;
+    }
+    convertSecondToMinute(time) {
+        const second = Math.round(time)
+        return second < 10 ? `0${second}` : second
     }
 
     loadNextSong() {
         this.wavesurfer.destroy()
         this.createWavesuffer()
 
-        const currentSong = this.currentTrack
         const that = this
-        this.wavesurfer.load(this.myList[currentSong]);
-        this.wavesurfer.on('finish', () => {
-            if (that.isReplay) {
-                wave.play([0])
-            } else {
-                this.loadNextSong();
-            }
-        });
-
         const wave = this.wavesurfer
+        let currentSong = this._data.currentTrack
 
-        // wave.on('loading', function (x) {
-        //     console.log(x);
-        // });
+        this.wavesurfer.load(this.myList[currentSong].url);
+
         wave.on('ready', function () {
-            wave.play();
-            console.log('aaa')
+            that._data.currentTime = 0
+            that._data.totalTime = wave.getDuration()
+            that._data.isloading = false
+
+            // that.isPlay = true
+
+            // if (this.isPlay) {
+            wave.play();    
+            wave.seekAndCenter(0.9)
+            // }
         });
-        this._data.isloading = false
+        this.mute()
+        console.log('a1')
+        console.log('a2')
+
         wave.on('error', function (e: any) {
             console.warn(e);
         });
 
         wave.on('audioprocess', function () {
             if (wave.isPlaying()) {
-                that._data.totalTime = Math.round(wave.getDuration())
-                that._data.currentTime = Math.round(wave.getCurrentTime())
+                that._data.currentTime = wave.getCurrentTime()
+                that._data.progressTimeLine = that._data.currentTime / that._data.totalTime * 100
+            }
+        });
+        this.wavesurfer.on('finish', () => {
+            if (that.isReplay) {
+                this.loadNextSong();
+            } else {
+                this._data.currentTrack = this._data.currentTrack + 1
+                this.loadNextSong();
             }
         });
 
-        this.currentTrack++
     }
 }
 </script>

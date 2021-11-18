@@ -14,6 +14,7 @@ export class AuthMixin extends Vue {
   email: string = ''
   password: string = ''
   code: string = ''
+  a: number = 0
 
   async login() {
     if (this.email.length === 0) return
@@ -30,20 +31,23 @@ export class AuthMixin extends Vue {
     if (this.first_name.length === 0) return
     if (this.email.length === 0) return
     if (this.password.length === 0) return
-    const { data } = await this.$axios.post('http://localhost:3000/api/v2/identity/users',
-    { 
-      first_name: this.first_name, 
-      last_name: this.last_name, 
-      email: this.email, 
-      password: this.password 
-    });
+    try {
+      const { data } = await this.$axios.post('http://localhost:3000/api/v2/identity/users',
+      { 
+        first_name: this.first_name, 
+        last_name: this.last_name, 
+        email: this.email, 
+        password: this.password 
+      });
+      this.$router.push({ path: '/' })
+    } catch (error) {
+    }
     
-    // this.$router.push({ path: '/' })
   }
   async confirmEmail() {
     if (this.code.length === 0) return
     if (this.email.length === 0) return
-
+    
     const { data } = await this.$axios.post('http://localhost:3000/api/v2/identity/users/confirm_code',
     { 
       email: this.email, 
@@ -51,4 +55,5 @@ export class AuthMixin extends Vue {
     });
     this.$router.push({ path: '/' })
   }
+  
 }
