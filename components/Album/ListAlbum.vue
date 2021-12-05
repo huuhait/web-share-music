@@ -1,29 +1,27 @@
 <template>
-<div class="new-song-list">
-    <AlbumItem />
-    <AlbumItem />
-    <AlbumItem />
-    <AlbumItem />
-    <AlbumItem />
-    <AlbumItem />
-    <AlbumItem />
-    <AlbumItem />
-   
-</div>
+    <div class="new-song-list">
+        <div v-for="song in listSong" :key="song.id" class="new-song-list-item">
+            <AlbumItem :song="song"/>
+        </div>
+    </div>
 </template>
 
 <script lang="ts">
 import {
     Vue,
-    Component
+    Component,
+    Prop
 } from 'vue-property-decorator';
 import AlbumItem from './AlbumItem.vue';
+
 @Component({
     components: {
         AlbumItem
     }
 })
-export default class ListAlbums extends Vue {}
+export default class ListAlbums extends Vue {
+    @Prop() listSong: any
+}
 </script>
 
 <style lang="less">

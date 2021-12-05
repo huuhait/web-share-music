@@ -10,14 +10,55 @@ html {
   -ms-text-size-adjust: 100%;
 }
 
-.container {
-  padding: 0 30px;
+body {
   background-color: #f2f4f8;
-  margin-bottom: 64px;
+}
+
+.container {
+  padding: 0 90px;
+  background-color: #f2f4f8;
+  padding-bottom: 64px;
+  height: 100%;
+  max-width: 1288px;
+  display: flex;
+  margin: auto;
 }
 
 .block {
   display: block !important;
+}
+
+.flex {
+  display: flex !important;
+}
+
+.al-item {
+  display: flex;
+  align-items: center;
+}
+
+.none {
+  display: none !important;
+}
+
+a {
+  text-decoration: none;
+}
+
+.hover {
+  background-color: rgba(76, 182, 203, 0.3);
+}
+
+.modal {
+  position: fixed;
+  z-index: 1;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
 }
 
 .musicbar {

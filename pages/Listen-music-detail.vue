@@ -1,331 +1,239 @@
 <template>
-<div>
-    <div class="container">
-        <div class="container-listen">
-            <div class="container-listen-main">
-                <div class="container-listen-main-left">
-                    <div class="container-listen-main-left-top">
-                        <div class="container-listen-main-left-top-play">
-                            <fa @click='rePlay' icon="pause" v-if="isPlay"></fa>
-                            <fa @click='rePlay' icon="play" v-else></fa>
+<div class="container" style="padding-top: 1px; padding-bottom: 95px;">
+    <div class="container-listen">
+        <div class="container-listen-content">
+            <div class="container-listen-content-left">
+                <div class="comment-form">
+                    <CmtForm @submit.prevent="comment">
+                        <div v-if="getUser" class="comment-form-avatar">
+                            <img :src="'api/v2/public/users/' + getUser.uid + '/avatar'" alt="">
                         </div>
-                        <div class="container-listen-main-left-top-name">
-                            <div class="container-listen-main-left-top-name-song">『Eve - 呪術廻戦 / Kaikai Kitan』Jujutsu Kaisen OP full</div>
-                            <div class="container-listen-main-left-top-name-author">unDer</div>
+                        <div v-else class="comment-form-avatar">
+                            <img src="/Placeholder.jpg" alt="">
                         </div>
-                        <div class="container-listen-main-left-top-info">
-                            <div class="container-listen-main-left-top-info-time">1 year ago</div>
-                            <div class="container-listen-main-left-top-info-tag"># Rock</div>
+                        <div class="comment-form-detail">
+                            <CmtInput v-model="contentCmt" :required="true" />
                         </div>
+                    </CmtForm>
+                </div>
+                <div class="comment-form-react">
+                    <div class="comment-form-react-left">
+                        <div class="comment-form-item-left" style="height: 30px; width: 30px; border-radius: 50%;">
+                            <div :class="'stage ' + getSetLikedState" @click="setLikedState">
+                                <div class="heart" style="zoom: 0.6;"></div>
+                            </div>
+                        </div>
+                        <div class="comment-form-item-left">
+                            <i class="fas fa-plus"></i>Add to next up
+                        </div>
+                        <div class="comment-form-item-left" @click="showModal">
+                            <i class="fas fa-plus"></i>Add to album
+                        </div>
+                        <modal-box ref="modal" />
                     </div>
-                    <div class="container-listen-main-left-bot">
-                        <div v-if="isloading" style="color: #fff; font-size: 40px;">Loading ... </div>
-                        <div id="hoang2">
+                    <div class="comment-form-react-right">
+                        <div class="comment-form-item-right">
+                            <i class="fas fa-play" style="color: #4cb6cb;"></i>{{currentSong.view_count}}
+                        </div>
+                        <div class="comment-form-item-right">
+                            <i class="fas fa-heart" style="color: #e2264d;"></i>{{likeCountCurrentSong}}
                         </div>
                     </div>
                 </div>
-                <div class="container-listen-main-right">
-                    <img src="https://i1.sndcdn.com/artworks-cvw9KDLdyuKyMj8N-W8QGtA-t500x500.jpg" alt="">
+                <div class="comment-detail">
+                    <div class="comment-detail-right">
+                        <div class="comment">
+                            <div class="comment-count">
+                                <i class="fas fa-comment-alt"></i>{{comments.length}} comments
+                            </div>
+                            <div v-if="comments.length === 0">
+                                <div style="text-align: center; margin: 100px 0;">
+                                    <div style="zoom: 10;">
+                                        <i class="fas fa-comment-alt" style="color: #d1cdcd;"></i>
+                                    </div>
+                                    <span>Chưa có bình luận nào</span>
+                                </div>
+                            </div>
+                            <div v-else>
+                                <div v-for="(item, index) in comments" :key="index" class="comment-list">
+                                    <div class="comment-list-item">
+                                        <comment :commentItem="item" :type="'main'" :indexCmt="index" :showReplyCmt="showReplyCmt" />
+                                        <div v-for="(replyItem, index2) in item['replies']" :key="index2">
+                                            <comment :commentItem="replyItem" :type="'reply'" :indexCmt="index" :showReplyCmt="showReplyCmt" />
+                                        </div>
+                                        <CmtForm :type="'reply'" :indexCmt="index" :indexReply="replyCmt" @submit.prevent="replyComment(item.id)">
+                                            <div v-if="getUser" class="comment-form-avatar">
+                                                <img :src="'api/v2/public/users/' + getUser.uid + '/avatar'" alt="">
+                                            </div>
+                                            <div v-else class="comment-form-avatar">
+                                                <img src="/Placeholder.jpg" alt="">
+                                            </div>
+                                            <div class="comment-form-detail reply-comment">
+                                                <CmtInput v-model="contentReply" :required="true" />
+                                            </div>
+                                        </CmtForm>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="container-listen-content">
-                <div class="container-listen-content-left">
-                    <div class="comment-form">
-                        <div class="comment-form-avatar">
-                            <img src="https://i1.sndcdn.com/avatars-000644511069-jpvo3k-t200x200.jpg" alt="">
-                        </div>
-                        <div class="comment-form-input">
-                            <input type="text" placeholder="Write a comment">
-                        </div>
-                    </div>
-                    <div class="comment-form-react">
-                        <div class="comment-form-react-left">
-                            <div class="comment-form-item-left"><a href="">
-                                    <fa icon="heart"></fa>Like
-                                </a></div>
-                            <div class="comment-form-item-left"><a href="">
-                                    <fa icon="retweet"></fa>Report
-                                </a></div>
-                            <div class="comment-form-item-left"><a href="">
-                                    <fa icon="share-square"></fa>Share
-                                </a></div>
-                            <!-- <div class="comment-form-item-left"><a href="">
-                                    <i class="fas fa-link"></i> Copy link
-                                </a></div>
-                            <div class="comment-form-item-left"><a href="">
-                                    <i class="fas fa-ellipsis-h"></i>More
-                                </a></div> -->
-                        </div>
-                        <div class="comment-form-react-right">
-                            <div class="comment-form-item-right">
-                                <fa icon="play"></fa>9,950
-                            </div>
-                            <div class="comment-form-item-right">
-                                <fa icon="heart"></fa>390
-                            </div>
-                            <div class="comment-form-item-right">
-                                <fa icon="retweet"></fa>99999
-                            </div>
-                        </div>
+            <div class="container-listen-content-right">
+                <div class="container-listen-content-right-title">
+                    <i class="fas fa-forward"></i> Next song
+                </div>
+                <div v-for="(song, index) in playlist" :key="index">
+                    <SongItem2 v-if="song.id === currentSong.id" :song="song" class="hover"/>
+                    <SongItem2 v-else :song="song" />
+                </div>
+            </div>
 
-                    </div>
-                    <div class="comment-detail">
-                        <div class="comment-detail-left">
-                            <div class="comment-detail-left-author">
-                                <div class="comment-detail-left-author-img">
-                                    <img src="https://i1.sndcdn.com/avatars-rXY5Cp0AzT6vHEcF-4i0vBA-t120x120.jpg" alt="">
-                                </div>
-                                <div class="comment-detail-left-author-name">
-                                    Eva
-                                </div>
-                                <div class="comment-detail-left-author-follow">
-                                    <div class="comment-detail-left-author-follow-user">
-                                        <fa icon="users"></fa> 99.999
-                                    </div>
-                                    <div class="comment-detail-left-author-follow-button">
-                                        <fa icon="user-plus"></fa> Follow
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="comment-detail-right">
-                            <div class="comment">
-                                <div class="comment-count">
-                                    <fa icon="comment-alt"></fa>3.420 comments
-                                </div>
-                                <div class="comment-list">
-                                    <div class="comment-list-item">
-                                        <div class="comment-list-item-avatar">
-                                            <img src="https://i1.sndcdn.com/avatars-28i9bpl5bABTzuP4-R5RPIQ-t500x500.jpg" alt="">
-                                        </div>
-                                        <div class="comment-list-item-detail">
-                                            <div class="comment-list-item-detail-top">
-                                                <div class="comment-list-item-detail-top-username">Hoang Dang</div>
-                                            </div>
-                                            <div class="comment-list-item-detail-bot">
-                                                Hoang dep trai vl
-                                            </div>
-                                        </div>
-                                        <div class="comment-list-item-detail-time">1 hours ago</div>
-                                    </div>
-                                    <div class="comment-list-item">
-                                        <div class="comment-list-item-avatar">
-                                            <img src="https://i1.sndcdn.com/avatars-28i9bpl5bABTzuP4-R5RPIQ-t500x500.jpg" alt="">
-                                        </div>
-                                        <div class="comment-list-item-detail">
-                                            <div class="comment-list-item-detail-top">
-                                                <div class="comment-list-item-detail-top-username">Hoang Dang</div>
-                                            </div>
-                                            <div class="comment-list-item-detail-bot">
-                                                Hoang dep trai vl
-                                            </div>
-                                        </div>
-                                        <div class="comment-list-item-detail-time">1 hours ago</div>
-                                    </div>
-                                    <div class="comment-list-item">
-                                        <div class="comment-list-item-avatar">
-                                            <img src="https://i1.sndcdn.com/avatars-28i9bpl5bABTzuP4-R5RPIQ-t500x500.jpg" alt="">
-                                        </div>
-                                        <div class="comment-list-item-detail">
-                                            <div class="comment-list-item-detail-top">
-                                                <div class="comment-list-item-detail-top-username">Hoang Dang</div>
-                                            </div>
-                                            <div class="comment-list-item-detail-bot">
-                                                Hoang dep trai vl
-                                            </div>
-                                        </div>
-                                        <div class="comment-list-item-detail-time">1 hours ago</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="container-listen-content-right">
-                    <div class="container-listen-content-right-title">
-                        <fa icon="soundcloud"></fa> Related song
-                    </div>
-                    <list-song2 />
-                </div>
-            </div>
         </div>
     </div>
 </div>
 </template>
 
 <script lang="ts">
-import {
-    Component,
-    Vue
-} from 'vue-property-decorator'
+import { mixins, Component, Ref } from 'nuxt-property-decorator';
 import Header from '../components/Header.vue'
 import Footer from '../components/Footer.vue'
 import ListSong2 from '../components/Song2/ListSong2.vue'
+import Comment from '../components/Comment.vue'
+import ModalBox from "@/components/Modal-box.vue"
+import store from '~/controllers/store'
+import MusicMixin from '~/mixins/music'
+
 @Component({
+    middleware: ["requirePlayList", "album"],
     components: {
         Header,
         Footer,
         ListSong2,
+        ModalBox,
+        Comment
     },
 })
 
-export default class Listen_music_detail extends Vue {
-    layout(context) {
+export default class Listen_music_detail extends mixins(MusicMixin) {
+    @Ref("modal") modalBox: ModalBox;
+    isLike: string = this.likedCurrentSong ? "is-active" : ""
+    isShowModal: boolean = false
+    user: any = store.value.user
+    replyCmt: any = null
+    preSong = store.value.currentSong
+
+    layout() {
         return 'music'
     }
 
-    private _data: any
-    Wavesurfer: any
-    wavesurfer: any
-    isPlay: boolean = false
-    muted: boolean = true
-    isReplay: boolean = false
-    isShuffle: boolean = false
-    myList: any[] = [{
-            id: 0,
-            name: "Sài Gòn Đâu Có Lạnh",
-            image: "artworks-3Tvthj5szuGw9XFz-g8FzrA-t500x500.jpg",
-            url: '../TaiNhacHay.Biz - Sài Gòn Đâu Có Lạnh.mp3'
-        },
-        {
-            id: 1,
-            name: "IroKousuiHorimiyaOpening",
-            image: "artworks-ipuUfyuMU4hdtXgz-xH27SQ-t500x500.jpg",
-            url: '../IroKousuiHorimiyaOpening-YohKamiyama-7026438.mp3'
-        },
-        {
-            id: 2,
-            name: "CryBabyTokyoRevengersOpening",
-            image: "artworks-Mlg3wB4sTkBztUs8-JrTmFQ-t200x200.jpg",
-            url: '../CryBabyTokyoRevengersOpening-OfficialHigeDandism-7014853.mp3'
-        },
-    ]
-    // '../TaiNhacHay.Biz - Sài Gòn Đâu Có Lạnh.mp3',
-    // '../KawakiWoAmeku-Minami-5862585.mp3',
-    // '../KaikaiKitan-Eve.mp3',
-    // '../IroKousuiHorimiyaOpening-YohKamiyama-7026438.mp3',
-    // '../CryBabyTokyoRevengersOpening-OfficialHigeDandism-7014853.mp3',
-    // '../Lost In Paradise (Jujutsu Kaisen Ending) - ALI, AKLO.mp3'
-    data() {
-        return {
-            totalTime: 0,
-            currentTime: 0,
-            isloading: true,
-            progressTimeLine: 0,
-            currentTrack: 0
+    get currentSong(): any {
+        return store.value.currentSong
+    }
+
+    get getUser() {
+        return store.value.user
+    }
+
+    get likedCurrentSong() {
+        return this.currentSong.liked
+    }
+
+    get likeCountCurrentSong() {
+        return this.currentSong.like_count
+    }
+
+    get playlist() {
+        return store.value.playlist
+    }
+
+    get allMusics() {
+        return store.value.music
+    }
+
+    showModal() {
+        if (!store.value.user) {
+            return this.$router.push('/login')
         }
-    }
-    mounted() {
-        if (process.browser) {
-            this.Wavesurfer = require('wavesurfer.js');
-        }
-        this.createWavesuffer()
-        this.loadNextSong()
+        // this.isShowModal = !this.isShowModal
+        this.modalBox.create2("");
     }
 
-    progress() {
-        this.wavesurfer.seekAndCenter(this._data.progressTimeLine / 100)
-    }
-    createWavesuffer() {
-        this._data.isloading = true
-        this.wavesurfer = this.Wavesurfer.create({
-            container: '#hoang2',
-            waveColor: "#eee",
-            progressColor: "#4cb6cb",
-            cursorColor: "#4cb6cb",
-            cursorWidth: 0,
-            barWidth: 4,
-            barRadius: 2,
-        });
-    }
-
-    play() {
-        this.isPlay = !this.isPlay
-        this.wavesurfer.playPause()
-    }
-    rePlay() {
-        this.isReplay = !this.isReplay
-    }
-    shuffle() {
-        this.isShuffle = !this.isShuffle
-    }
-    pre_skip() {
-        this.wavesurfer.skipBackward(5)
-    }
-    next_skip() {
-        this.wavesurfer.skipForward(5)
-    }
-    pre_song() {
-        if (this._data.currentTrack > 0) {
-            this._data.currentTrack = this._data.currentTrack - 1
-            this.loadNextSong();
-        } else {
-            this.wavesurfer.seekAndCenter(0)
-        }
-    }
-    next_song() {
-        this._data.currentTrack = this._data.currentTrack + 1
-        this.loadNextSong();
-    }
-    mute() {
-        this.wavesurfer.setMute(this.muted)
-        this.muted = !this.muted;
-    }
-    convertSecondToMinute(time) {
-        const second = Math.round(time)
-        return second < 10 ? `0${second}` : second
-    }
-
-    loadNextSong() {
-        this.wavesurfer.destroy()
-        this.createWavesuffer()
-
+    async mounted() {
         const that = this
-        const wave = this.wavesurfer
-        let currentSong = this._data.currentTrack
 
-        this.wavesurfer.load(this.myList[currentSong].url);
+        store.value.isMusicDetail = "position: relative; top: 0px;"
 
-        wave.on('ready', function () {
-            that._data.currentTime = 0
-            that._data.totalTime = wave.getDuration()
-            that._data.isloading = false
-
-            // that.isPlay = true
-
-            // if (this.isPlay) {
-            wave.play();    
-            wave.seekAndCenter(0.9)
-            // }
-        });
-        this.mute()
-        console.log('a1')
-        console.log('a2')
-
-        wave.on('error', function (e: any) {
-            console.warn(e);
-        });
-
-        wave.on('audioprocess', function () {
-            if (wave.isPlaying()) {
-                that._data.currentTime = wave.getCurrentTime()
-                that._data.progressTimeLine = that._data.currentTime / that._data.totalTime * 100
+        if(process.client){
+            if(!store.value.currentSong && localStorage.getItem("currentSong")) {
+                const songLocal: any = localStorage.getItem("currentSong")
+                store.value.currentSong = JSON.parse(songLocal);
+                store.value.playlist = [store.value.currentSong]
             }
-        });
-        this.wavesurfer.on('finish', () => {
-            if (that.isReplay) {
-                this.loadNextSong();
-            } else {
-                this._data.currentTrack = this._data.currentTrack + 1
-                this.loadNextSong();
-            }
-        });
+        }
 
+        await this.getAllComment()
+
+        setInterval(() => {
+            if (that.currentSong !== that.preSong) {
+                that.preSong = that.currentSong
+                this.getAllComment()
+            }
+        }, 100)
+    }
+
+    showReplyCmt(indexCmt: number) {
+        this.replyCmt = indexCmt
+    }
+
+    setLikedState() {
+        if (this.isLike === "") {
+            this.isLike = "is-active"
+            this.like(this.currentSong.id)
+        } else {
+            this.isLike = ""
+            this.unLike(this.currentSong.id)
+        }
+    }
+
+    get getSetLikedState() {
+        return this.isLike
     }
 }
 </script>
 
 <style lang="less">
+.stage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    .heart {
+        width: 100px;
+        height: 100px;
+        background: url("https://cssanimation.rocks/images/posts/steps/heart.png") no-repeat;
+        background-position: 0 0;
+        cursor: pointer;
+        transition: background-position 1s steps(28);
+        transition-duration: 0s;
+
+    }
+}
+
+.is-active {
+    .heart {
+        background-position: -2800px 0;
+        transition-duration: 1s;
+    }
+}
+
+.close-modal {
+    position: absolute; 
+    top: 20px;
+    right: 24px;
+}
+
 .container {
     background-color: #f2f4f8;
     display: flex;
@@ -362,7 +270,7 @@ export default class Listen_music_detail extends Vue {
                         height: 60px;
                         width: 60px;
 
-                        svg {
+                        i {
                             color: #fff;
                             zoom: 1.4;
                         }
@@ -407,9 +315,6 @@ export default class Listen_music_detail extends Vue {
                     flex: 1;
                     justify-content: center;
 
-                    #hoang {
-                        height: 128px;
-                    }
                 }
             }
 
@@ -418,6 +323,8 @@ export default class Listen_music_detail extends Vue {
 
                 img {
                     width: 340px;
+                    height: 340px;
+                    object-fit: cover;
                     border-radius: 50%;
                 }
             }
@@ -433,50 +340,11 @@ export default class Listen_music_detail extends Vue {
 
                 &-title {
                     color: #999;
-                    margin-bottom: 10px;
+                    margin: 14px 0;
 
-                    svg {
+                    i {
                         margin-right: 6px;
                         padding-left: 10px;
-                    }
-                }
-
-                .profile-container-content-right-info-song {
-                    padding: 10px 0;
-                    display: flex;
-
-                    &-avatar {
-                        padding: 0 10px;
-                    }
-
-                    &-text {
-                        color: #999;
-
-                        &-name {
-                            font-size: 14px;
-                        }
-
-                        &-author {
-                            color: #000;
-                            font-size: 12px;
-                        }
-
-                        &-list {
-                            display: flex;
-                            justify-content: space-between;
-                            padding: 4px 0;
-                            margin-left: -2px;
-
-                            &-item {
-                                margin-right: 20px;
-                                font-size: 14px;
-
-                                svg {
-                                    margin-right: 6px;
-                                    zoom: 0.8;
-                                }
-                            }
-                        }
                     }
                 }
             }
@@ -487,33 +355,17 @@ export default class Listen_music_detail extends Vue {
                 border-right: 1px solid #f2f2f2;
 
                 .comment-form {
-                    border: 1px solid #e5e5e5;
                     display: flex;
-                    height: 40px;
+                    height: 50px;
                     margin-bottom: 16px;
                     border-radius: 4px;
+                    width: 100%;
 
                     &-avatar {
                         img {
-                            width: 40px;
-                        }
-                    }
-
-                    &-input {
-                        background-color: #f2f4f8;
-                        flex: 1;
-                        display: flex;
-                        align-items: center;
-                        padding: 0 10px;
-                        height: 40px;
-
-                        input {
-                            padding: 0 8px;
+                            width: 30px;
                             height: 30px;
-                            border: 1px solid #e5e5e5;
-                            outline: none;
-                            border-radius: 4px;
-                            width: 100%;
+                            object-fit: cover;
                         }
                     }
                 }
@@ -547,7 +399,7 @@ export default class Listen_music_detail extends Vue {
                                 &-user {
                                     font-size: 14px;
 
-                                    svg {
+                                    i {
                                         margin-right: 10px;
                                     }
                                 }
@@ -560,7 +412,7 @@ export default class Listen_music_detail extends Vue {
                                     font-size: 12px;
                                     color: #fff;
 
-                                    svg {
+                                    i {
                                         margin-right: 6px;
                                     }
                                 }
@@ -573,10 +425,12 @@ export default class Listen_music_detail extends Vue {
                         color: #999;
 
                         .comment {
+                            padding-left: 60px;
+
                             &-count {
                                 margin-bottom: 20px;
 
-                                svg {
+                                i {
                                     margin-right: 10px;
                                 }
                             }
@@ -584,33 +438,89 @@ export default class Listen_music_detail extends Vue {
                             &-list {
                                 &-item {
                                     display: flex;
-                                    padding: 10px 0;
+                                    flex-direction: column;
+                                    padding: 1px;
 
-                                    &-avatar {
-                                        margin-right: 10px;
+                                    &-main,
+                                    &-reply {
+                                        display: flex;
+                                        padding: 5px 0;
 
-                                        img {
-                                            border-radius: 500px;
-                                            width: 50px;
-                                        }
-                                    }
+                                        .comment-list-item-avatar {
+                                            margin-right: 10px;
 
-                                    &-detail {
-                                        flex: 1;
-
-                                        &-top {
-                                            padding-bottom: 8px;
-
-                                            &-username {
-                                                font-size: 16px;
+                                            img {
+                                                border-radius: 500px;
+                                                width: 40px;
+                                                height: 40px;
+                                                object-fit: cover;
                                             }
                                         }
 
-                                        &-time {
-                                            font-size: 12px;
-                                            margin-right: 20px;
+                                        .comment-list-item-detail {
+                                            flex: 1;
+
+                                            &-top {
+                                                padding-bottom: 1px;
+
+                                                &-username {
+                                                    font-size: 16px;
+                                                    color: rgb(22, 24, 35);
+                                                    font-weight: 500;
+                                                }
+                                            }
+
+                                            &-center {
+                                                font-size: 16px;
+                                                line-height: 22px;
+                                                color: rgb(18, 18, 18);
+                                                padding-right: 30px;
+                                            }
+
+                                            &-bot {
+                                                display: flex;
+                                                margin-top: 6px;
+
+                                                &-time {
+                                                    font-size: 14px;
+                                                }
+
+                                                &-reply {
+                                                    margin-left: 24px;
+                                                    font-size: 15px;
+                                                    cursor: pointer;
+                                                }
+                                            }
+
+                                            &-react {
+                                                font-size: 12px;
+                                                min-width: 20px;
+                                                text-align: center;
+
+                                                &-number {
+                                                    padding-bottom: 20px;
+                                                    margin-top: -18px;
+                                                }
+                                            }
+                                        }
+
+                                    }
+
+                                    &-reply {
+                                        padding-left: 50px;
+
+                                        .comment-list-item-avatar {
+                                            margin-right: 10px;
+
+                                            img {
+                                                border-radius: 500px;
+                                                width: 30px;
+                                                height: 30px;
+                                                object-fit: cover;
+                                            }
                                         }
                                     }
+
                                 }
                             }
                         }
@@ -633,24 +543,31 @@ export default class Listen_music_detail extends Vue {
                             margin-left: 16px;
                             color: #333 !important;
 
-                            svg {
+                            i {
                                 margin-right: 6px;
                             }
                         }
 
                         .comment-form-item-left {
+                            position: relative;
                             padding: 4px 10px;
                             margin-right: 10px;
                             border: 1px solid #e5e5e5;
                             border-radius: 4px;
+                            cursor: pointer;
 
-                            a {
-                                text-decoration: none;
-                                color: #000;
+                            i {
+                                margin-right: 6px;
+                                color: #4cb6cb;
+                            }
+                        }
 
-                                svg {
-                                    margin-right: 6px;
-                                }
+                        .comment-form-item-left:hover {
+                            background-color: #4cb6cb;
+                            color: #fff;
+
+                            i {
+                                color: #fff;
                             }
                         }
 

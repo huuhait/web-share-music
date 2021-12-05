@@ -25,7 +25,7 @@ export default class AlbumItem2 extends Vue {}
 
 <style lang="css">
 .top-song {
-    padding: 0 15px;
+    /* padding: 0 15px; */
     flex: 1;
 }
 

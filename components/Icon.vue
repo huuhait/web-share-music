@@ -1,7 +1,5 @@
 <template>
-<client-only>
-    <fa icon="forward"></fa>
-</client-only>
+  <i :class="'fas fa' + ' ' + [icon]"></i>
 </template>
 
 <script lang='ts'>
@@ -11,7 +9,7 @@ import {
     Prop
 } from 'vue-property-decorator';
 @Component
-export default class fa extends Vue {
-  
+export default class Icon extends Vue {
+  @Prop() icon!: string
 }
 </script>

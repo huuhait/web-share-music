@@ -1,9 +1,8 @@
 <template>
 <div class="top-song-list">
-    <SongItem2 />
-    <SongItem2 />
-    <SongItem2 />
-    <SongItem2 />
+    <div v-for="(item, index) in data" :key="index" class="playlist-list">
+      <SongItem2 :song="item"/>
+    </div>
 </div>
 </template>
 
@@ -20,6 +19,7 @@ import SongItem2 from './SongItem2.vue';
     }
 })
 export default class ListSong2 extends Vue {
+    @Prop() data: any
 }
 </script>
 

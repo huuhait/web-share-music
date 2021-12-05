@@ -1,22 +1,23 @@
 <template>
 <div class="form-block">
-    <div v-if="label">
+    <div v-if="label" class="form-block-label">
         {{ label }} <span v-if="required"></span>
     </div>
     <input 
         v-if="type == 'password'"
         :value="value" :type="type"
         :placeholder="placeholder" 
-        @input="event => $emit('input', event.target.value)" 
         class="form-control" 
+        @input="event => $emit('input', event.target.value)" 
     />
     <input v-else 
         :value="value" 
         :type="type" 
         :placeholder="placeholder" 
+        class="form-control" 
         @input="event => $emit('input',  event.target.value)" 
-        class="form-control" />
-    <div v-if="error" >{{ error }}</div>
+    />
+    <div v-if="error" class="error">{{ error }}</div>
 </div>
 </template>
 
@@ -42,10 +43,14 @@ export default class Input extends Vue {
 .form-block {
     margin: 18px 0;
 
-    label {
+    &-label {
         margin-bottom: 8px;
         display: inline-block;
         font-size: 16px;
+    }
+    .error {
+        color: red;
+        margin-top: 8px;
     }
 
     .form-control {

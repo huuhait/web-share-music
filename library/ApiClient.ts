@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import ZNotification from '@/library/z-notification'
 
 export const jsonToParam = (json: any, first_str = "?") => {
   const parts: string[] = [];
@@ -19,21 +20,22 @@ const formatError = (e: any) => {
   const { response } = e;
   const { error } = response.data;
 
-  if (response.status !== 401) {
-    // Check error
-    console.log(error.response.data)
-  }
-
+  // Check error
+  ZNotification.error({
+    title: "Error",
+    description: window.$nuxt.$t(error).toString()
+  })
   sleep(10);
 };
 
 const getClient = (baseURL: string) => {
   const client = axios.create({ baseURL });
   client.interceptors.response.use(
-    (response) => Promise.resolve(response),
+    (response) => { 
+      return Promise.resolve(response)
+    },
     (error) => {
       formatError(error);
-      console.log(error)
       return Promise.reject(error);
     },
   );

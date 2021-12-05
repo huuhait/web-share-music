@@ -1,19 +1,21 @@
 <template>
 <div class="login-block">
-    <div class="login-main">
+    <div class="login-img"><img src="/background_login.jpg" alt=""></div>
+    <div class="login-main" style="flex-direction: column">
         <div class="login-another">
             <p class="register">
-                Don't have an account yet? <a href="">Create one</a>
+                Don't have an account yet?
+                <Nuxt-Link to="/register">Create one</Nuxt-Link>
             </p>
         </div>
-        <AuthForm title="Đăng nhập" @submit.prevent="login">
-            <AuthInput v-model="email" label="Email" :required="true" />
+        <AuthForm title="Login" @submit.prevent="login">
+            <AuthInput v-model="email" label="Email" :required="true" :error="email_error"/>
             <AuthInput v-model="password" label="Password" type="password" :required="true" />
             <div class="auth-form-footer">
                 <div class="form-block">
                     <input class="form-control btn" type="submit" name="submit" value="Sign In" />
                 </div>
-                <a href="" class="forgot">Forgot Password?</a>
+                <Nuxt-Link to="/forgot-password" class="forgot">Forgot Password?</Nuxt-Link>
             </div>
         </AuthForm>
     </div>
@@ -23,7 +25,6 @@
 <script lang="ts">
 import {
     Component,
-    Vue,
     Mixins
 } from 'vue-property-decorator'
 
@@ -32,25 +33,26 @@ import {
 } from '../mixins/auth'
 
 @Component({
+    middleware: "guest",
     components: {},
 })
 export default class Login extends Mixins(AuthMixin) {}
 </script>
 
-<style lang="less" >
-html {
-    background: url('../static/background_login.jpg') no-repeat;
-    background-size: cover;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
+<style lang="less">
 .login-block {
-    position: absolute;
-    right: 0;
-    padding: 60px;
-    width: 50%;
-    height: 100%;
+    position: fixed;
+    inset: 0;
     background-color: #fff;
+    display: flex;
+
+    .login-img {
+        width: 50%;    
+        height: 100%;
+        .img {
+            height: 100%;
+        }
+    }
 
     a {
         text-decoration: none;
@@ -63,10 +65,18 @@ html {
 
     .login-main {
         z-index: 2;
+        flex: 1;
+        background-color: #fff;
+        padding: 20px;
 
         .login-another {
+            margin: 40px 0;
+            display: flex;
+            width: 100%;
+            justify-content: flex-end;
+            height: 40px;
             .register {
-                margin-bottom: 80px;
+                justify-content: end;
                 text-align: right;
                 font-size: 14px;
             }

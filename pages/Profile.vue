@@ -1,72 +1,57 @@
 <template>
 <div>
-    <div class="container">
+    <div class="container" style="padding-bottom: 90px;">
         <div class="profile-container">
             <div class="profile-container-banner">
                 <div class="profile-container-banner-background">
                     <div class="profile-container-banner-avatar">
-                        <img src="https://i1.sndcdn.com/avatars-000644511069-jpvo3k-t200x200.jpg" alt="">
+                        <img v-if="user" :src="'api/v2/public/users/' + user.uid + '/avatar'" alt="">
                     </div>
-                    <div class="profile-container-banner-name">
-                        {{user.first_name + '' + user.last_name}}
-                    </div>
-                    <div class="profile-container-banner-upload">
-                        <NuxtLink to="/update-profile">Upload your profile</NuxtLink>
-                        <!-- <label for="input-file">
-                            <i class="fas fa-camera"></i>
-                            Upload your profile
-                        </label> -->
-                        <!-- <input id="input-file" type="file" style="width:200px"> -->
+                    <div v-if="user" class="profile-container-banner-name">
+                        {{user.first_name + ' ' + user.last_name}}
                     </div>
                 </div>
             </div>
             <div class="profile-container-nav">
                 <div class="profile-container-nav-left">
-                    <div class="profile-container-nav-item">
-                        <a href="">
-                            Popular Tracks
-                        </a>
+                    <div class="profile-container-nav-item" @click="nav(2)">
+                        My Musics
                     </div>
-                    <div class="profile-container-nav-item">
-                        <a href="">
-                            Tracks
-                        </a>
+                    <div class="profile-container-nav-item" @click="nav(1)">
+                        Liked Musics
                     </div>
-                    <div class="profile-container-nav-item">
-                        <a href="">
-                            Albums
-                        </a>
-                    </div>
-                    <div class="profile-container-nav-item">
-                        <a href="">
-                            Playlists
-                        </a>
+                    <div class="profile-container-nav-item" @click="nav(0)">
+                        My Albums
                     </div>
                 </div>
                 <div class="profile-container-nav-right">
                     <div class="profile-container-nav-item">
-                        <a href="">
-                            <i class="fas fa-share-square"></i>
-                            Share
-                        </a>
-                    </div>
-                    <div class="profile-container-nav-item">
-                        <a href="">
-                            <i class="far fa-edit"></i>
+                        <NuxtLink to="/update-profile">
+                            <i class="fas fa-edit"></i>
                             Edit
-                        </a>
+                        </NuxtLink>
                     </div>
                 </div>
             </div>
-            <div class="profile-container-content">
-                <div class="profile-container-content-left">
-                    <div class="profile-container-content-left-img">
+            <div class="profile-container-content" >
+                <div v-if="indexNav === 2" class="profile-container-content-left" style="padding: 10px 30px; display: block;">
+                    <div v-for="(likedMusic, index) in myMusics" :key="index">
+                        <SongItem2 :song="likedMusic" :type="'update-music'"/>
+                    </div>
+                </div>
+                <div v-else-if="indexNav === 1" class="profile-container-content-left" style="padding: 10px 30px; display: block;">
+                    <div v-for="(likedMusic, index) in likedMusics" :key="index">
+                        <SongItem2 :song="likedMusic" />
+                    </div>
+                </div>
+                 <div v-else class="profile-container-content-left" style="padding: 10px 30px; display: block;">
+                    <!-- <div class="profile-container-content-left-img">
                         <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAACnBAMAAADd8MzuAAAAJ1BMVEUAAADt7e3v7+/u7u7u7u7v7+/V1dXu7u7v7+/v7+/u7u7u7u7t7e1+coy7AAAADXRSTlMAK4/V8v8GlP29LPOQA9OSagAAAOlJREFUeAHt3CVCBQEUBdCLdxIR3QEkIgvAXRuVRMatswESGVkC68It/jQPOfeP20mjf+Yl6R2dbzgTA0myfTzfeJZ2k+7L+YIsb6VnviQ76auBLzJSA89krAaezX0NvJqXbhrOiwkGg8FgMBgMBoP/E9zV+gpgMBgMBr9MmPq3MBgMBoPB3wb+Hvzd+1MwGAwGf+uDwWDwN/IlLcCfmQKDweDKIxcYDHbvBAaDwWB/hjQAg8FgMLjgfS4wGAwGg30LAwaDwWAwGFxW16euktFDDTyT6xp4v6w+V1lFsroabMnVeNPu7UDyBMXh8J9inpNdAAAAAElFTkSuQmCC" alt="">
 
                     </div>
                     <div class="profile-container-content-left-title">
                         <div>
-                            Seems a little quiet over here
+                            Seems a little quiet over here 2222
                         </div>
                         <a href="profile-container-content-left-title-link">
                             Upload a track to share it with your followers.
@@ -76,70 +61,33 @@
                         <a href="">
                             Upload now
                         </a>
+                    </div> -->
+                    <div v-for="(albumItem, index) in getAllAlbums" :key="index"  class="modal-box-list-item">
+                        <AlbumItem3 :album="albumItem" />
+                        
                     </div>
                 </div>
                 <div class="profile-container-content-right">
                     <div class="profile-container-content-right-follow">
                         <div class="profile-container-content-right-follow-item">
-                            <div>Folower</div>
-                            <div>1</div>
-                        </div>
-                        <div class="profile-container-content-right-follow-item" style="border-right: 1px solid #f2f2f2; border-left: 1px solid #f2f2f2;">
-                            <div>Folowing</div>
-                            <div>0</div>
+                            <span style="margin-right: 6px;">{{myMusics.length}}</span>
+                            Tracks
                         </div>
                         <div class="profile-container-content-right-follow-item">
-                            <div>Tracks</div>
-                            <div>0</div>
+                            <div class="profile-container-content-right-info-like">
+                            {{likedMusics.length}}<i class="fas fa-heart"></i>
+                        </div>
+                        </div>
+                        <div class="profile-container-content-right-follow-item">
+                            <span style="margin-right: 6px;">{{album.length}}</span>
+                            Albums
                         </div>
                     </div>
-                    <div class="profile-container-content-right-info">
+                    <!-- <div class="profile-container-content-right-info">
                         <div class="profile-container-content-right-info-like">
-                            <i class="fas fa-heart"></i>1 like
+                            <i class="fas fa-heart"></i>{{likedMusics.length}} like
                         </div>
-                        <div class="profile-container-content-right-info-song">
-                            <div class="profile-container-content-right-info-song-avatar">
-                                <img src="https://i1.sndcdn.com/artworks-000484267635-ttdf7e-t50x50.jpg" alt="">
-                            </div>
-                            <div class="profile-container-content-right-info-song-text">
-                                <div class="profile-container-content-right-info-song-text-name">MU</div>
-                                <div class="profile-container-content-right-info-song-text-author">Lullaby</div>
-                                <div class="profile-container-content-right-info-song-text-list">
-                                    <div class="profile-container-content-right-info-song-text-list-item">
-                                        <i class="fas fa-play"></i>9,950
-                                    </div>
-                                    <div class="profile-container-content-right-info-song-text-list-item">
-                                        <i class="fas fa-heart"></i>390
-
-                                    </div>
-                                    <div class="profile-container-content-right-info-song-text-list-item">
-                                        <i class="fas fa-comment-alt"></i>200
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="profile-container-content-right-info-song">
-                            <div class="profile-container-content-right-info-song-avatar">
-                                <img src="https://i1.sndcdn.com/artworks-000484267635-ttdf7e-t50x50.jpg" alt="">
-                            </div>
-                            <div class="profile-container-content-right-info-song-text">
-                                <div class="profile-container-content-right-info-song-text-name">MU</div>
-                                <div class="profile-container-content-right-info-song-text-author">Lullaby</div>
-                                <div class="profile-container-content-right-info-song-text-list">
-                                    <div class="profile-container-content-right-info-song-text-list-item">
-                                        <i class="fas fa-play"></i>9,950
-                                    </div>
-                                    <div class="profile-container-content-right-info-song-text-list-item">
-                                        <i class="fas fa-heart"></i>390
-
-                                    </div>
-                                    <div class="profile-container-content-right-info-song-text-list-item">
-                                        <i class="fas fa-comment-alt"></i>200
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -150,31 +98,65 @@
 <script lang="ts">
 import {
     Component,
-    Vue
+    Mixins
 } from 'vue-property-decorator'
+import { Context } from '@nuxt/types';
 import Header from '../components/Header.vue'
 import Footer from '../components/Footer.vue'
 import store from "../controllers/store";
+import MusicMixin from '~/mixins/music';
 
 @Component({
+    middleware: ["auth", "album"],
     components: {
         Header,
         Footer
     },
 })
-
-export default class Profile extends Vue {
-    layout(context: any) {
+export default class Profile extends Mixins(MusicMixin) {
+    layout() {
         return 'music'
     }
-    user: any = '';
 
-    data() {
-        this.user = store.value.user
+    indexNav: number = 2
+    likedMusics = [];
+    myMusics = []
+    album: any[] = []
+
+    get user() {
+        return store.value.user;
+    }
+
+    get currentSong() {
+        return store.value.currentSong
+    }
+
+    get getAllAlbums() {
+        return store.value.albums
+    }
+
+    nav(index: number) {
+        this.indexNav = index
+    }
+
+    mounted() {
+        store.value.isMusicDetail = "position: absolute; top: -500px;"
+    }
+
+    async asyncData({$axios}: Context) {
+        const data = await $axios.$get(`http://localhost:3000/api/v2/public/users/${store.value.user?.uid}/liked/musics`)
+        let myMusicsUploaded = []
+        if(store.value.user?.role !== "member") {
+            myMusicsUploaded = await $axios.$get(`http://localhost:3000/api/v2/resource/musics`)
+        }
+        const myAlbums = await $axios.$get(`http://localhost:3000/api/v2/resource/albums`)
         return {
-            user: this.user
+            likedMusics: data,
+            myMusics: myMusicsUploaded,
+            album: myAlbums
         }
     }
+    
 }
 </script>
 
@@ -183,25 +165,25 @@ export default class Profile extends Vue {
     background-color: #f2f4f8;
     display: flex;
     justify-content: center;
+    padding-bottom: 90px;
 
     .profile-container {
-        // padding-top: 10px;
         width: 80%;
         display: flex;
         flex-direction: column;
         margin: auto;
-        margin-bottom: 90px;
         background-color: #fff;
 
         &-content {
             display: flex;
+            min-height: 414px;
 
             &-left {
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
-                padding: 50px 30px;
+                padding: 80px 30px;
                 width: 70%;
                 border-right: 1px solid #f2f2f2;
 
@@ -228,10 +210,9 @@ export default class Profile extends Vue {
                     }
 
                     a:hover {
-                        color: #000;
+                        color: #000
                     }
                 }
-
             }
 
             &-right {
@@ -246,6 +227,7 @@ export default class Profile extends Vue {
                     padding-bottom: 10px;
                     margin: 0 -20px;
                     margin-bottom: 30px;
+                    text-align: center;
 
                     &-item {
                         flex: 1;
@@ -255,16 +237,14 @@ export default class Profile extends Vue {
 
                 &-info {
                     &-like {
-                        padding: 20px 0;
 
                         i {
-                            margin-right: 10px;
+                            margin-left: 10px;
                             color: red;
                         }
                     }
 
                     &-song {
-                        padding: 20px 0;
                         display: flex;
 
                         &-avatar {
@@ -277,21 +257,20 @@ export default class Profile extends Vue {
                             }
 
                             &-author {
-                                color: #000;
+                                color: #999;
                                 font-size: 12px;
                             }
 
                             &-list {
                                 display: flex;
-                                justify-content: space-between;
                                 padding: 4px 0;
-                                margin-left: -2px;
 
                                 &-item {
                                     margin-right: 20px;
                                     font-size: 14px;
 
                                     i {
+                                        color: #999;
                                         margin-right: 6px;
                                         zoom: 0.8;
                                     }
@@ -318,7 +297,10 @@ export default class Profile extends Vue {
                     margin-right: 50px;
 
                     img {
-                        border-radius: 500px;
+                        border-radius: 50%;
+                        height: 160px;
+                        width: 160px;
+                        object-fit: cover;
                     }
                 }
 
@@ -336,6 +318,10 @@ export default class Profile extends Vue {
                 .profile-container-banner-upload {
                     display: flex;
                     height: 30px;
+
+                    a {
+                        color: #000;
+                    }
 
                     label {
                         border: 1px solid #fff;
@@ -370,6 +356,7 @@ export default class Profile extends Vue {
             margin: 0 20px;
             justify-content: space-between;
             border-bottom: 1px solid #f2f2f2;
+            cursor: pointer;
 
             &-left,
             &-right {
@@ -378,6 +365,7 @@ export default class Profile extends Vue {
                 .profile-container-nav-item {
                     padding: 14px 24px;
                     border: none;
+                    border-bottom: 2px solid transparent;
 
                     a {
                         text-decoration: none;
@@ -385,13 +373,14 @@ export default class Profile extends Vue {
                         display: flex;
 
                         i {
+                            color: #4cb6cb;
                             margin-right: 6px;
                         }
                     }
                 }
 
                 .profile-container-nav-item:hover {
-                    border-bottom: 2px solid #000;
+                    border-bottom: 2px solid #4cb6cb;
                     background-color: #f2f2f2;
                 }
             }

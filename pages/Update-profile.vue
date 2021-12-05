@@ -1,59 +1,68 @@
 <template>
 <div class="container">
-    <AuthForm class="update-profile-container" style="display: flex">
+    <form 
+        class="update-profile-container" 
+        style="display: flex"
+        @submit.prevent="updatedProfile"
+    >   
         <div class="update-profile-container-left">
-            <div class="update-profile-container-left-img">
-                <img src="../static/Placeholder.jpg" alt="" />
+            <div class="update-profile-container-left-img2">
                 <div>
+                    <div class="overlay"></div>
                     <label for="input-file">
-                        <i class="fas fa-camera"></i>
-                        Upload your profile
+                        <img v-if="url !== ''" :src="url" />
+                        <img v-else :src="'api/v2/public/users/' + user.uid + '/avatar'" alt="" />
+                        <!-- <Icon icon="camera"></Icon> -->
+                        <!-- Upload your avatar -->
                     </label>
-                    <input id="input-file" type="file" style="width: 200px" />
+                    <input 
+                        id="input-file" 
+                        label="Avatar" 
+                        type="file"
+                        style="width: 200px"
+                        @change="onImageChanged"
+                    />
                 </div>
             </div>
         </div>
         <div class="update-profile-container-right">
-            <form class="update-profile-container-right-form">
-                <div class="update-profile-container-right-form-input">
-                    <span>First name</span>
-                    <input type="text" :value="user.first_name" />
-                </div>
-                <div class="update-profile-container-right-form-input">
-                    <span>Last name</span>
-                    <input type="text" :value="user.last_name" />
-                </div>
-                <AuthInput v-model="email" :value="user.email" label="Email" :required="true" />
+            <div class="update-profile-container-right-form" >
+                <AuthInput v-model="first_name" label="First name" :required="true" :error="first_name_error"/>
+                <AuthInput v-model="last_name" label="Last name" :required="true" :error="last_name_error"/>
+                <AuthInput v-model="bio" label="Bio" :required="true" />
                 <div class="update-profile-container-right-form-btn">
                     <button type="submit">Cập nhật</button>
-                </div>
-            </form>
+                </div> 
+            </div>
         </div>
-    </AuthForm>
+    </form>
 </div>
 </template>
 
 <script lang="ts">
 import {
     Component,
-    Vue,
     Mixins
 } from 'vue-property-decorator'
-import store from "../controllers/store";
 import {
     AuthMixin
 } from '../mixins';
 
 @Component({
+    middleware: "auth",
     components: {},
 })
 
 export default class Update_Profile extends Mixins(AuthMixin) {
-    layout(context) {
-        return 'music'
-    }
-    user = store.value.user;
+	head() {
+		return {
+			title:  "Update profile"
+		}
+	}
 
+	layout() {
+		return 'music'
+	}
 }
 </script>
 
@@ -65,11 +74,9 @@ export default class Update_Profile extends Mixins(AuthMixin) {
     padding: 30px;
 
     .update-profile-container {
-        // padding-top: 10px;
         width: 80%;
         display: flex;
         margin: auto;
-        //   margin-bottom: 90px;
         background-color: #fff;
         padding: 40px 20px;
 
@@ -81,28 +88,46 @@ export default class Update_Profile extends Mixins(AuthMixin) {
             align-items: center;
             justify-content: center;
 
-            &-img {
+            &-img2 {
                 text-align: center;
 
                 img {
-                    width: 160px;
+                    width: 240px;
+                    height: 240px;
+                    object-fit: cover;
                     margin-bottom: 20px;
+                    border-radius: 50%;
+                }
+
+                .overlay {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    left: 0;
+                    background-color: rgba(0, 0, 0, 0.5);
+                    z-index: 2;
+                    align-items: center;
+                    justify-content: center;
+                    display: none;
                 }
 
                 label {
-                    border: 1px solid #f2f2f2;
                     padding: 10px;
                     background-color: #fff;
                     color: #000;
                     display: flex;
                     align-items: center;
+                    justify-content: space-evenly;
+                    border: none;
+                    position: relative;
 
-                    i {
+                    svg {
                         margin-right: 10px;
                         color: #4cb6cb;
                     }
                 }
-
+                
                 input[type="file"] {
                     display: none;
                 }
@@ -144,11 +169,16 @@ export default class Update_Profile extends Mixins(AuthMixin) {
 
                     button {
                         padding: 10px 20px;
-                        background-color: greenyellow;
+                        background-color: #fff;
                         outline: none;
-                        border: none;
-                        border-radius: 10px;
+                        border: 1px solid #4cb6cb;
+                        border-radius: 20px;
+                        color: #4cb6cb;
+                        min-width: 60px;
+                    }
+                    button:hover {
                         color: #fff;
+                        background-color: #4cb6cb;
                     }
                 }
             }

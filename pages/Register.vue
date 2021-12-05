@@ -1,15 +1,11 @@
 <template>
 <div class="login-block">
+    <div class="login-img"><img src="/background_login.jpg" alt=""></div>
     <div class="login-main">
-        <div class="login-another">
-            <p class="register">
-                Don't have an account yet? <a href="">Create one</a>
-            </p>
-        </div>
-        <AuthForm title="Đăng ký" @submit.prevent="register">
+        <AuthForm title="Register" @submit.prevent="register">
             <AuthInput v-model="first_name" label="First name" type="text" :required="true" />
             <AuthInput v-model="last_name" label="Last name" type="text" :required="true" />
-            <AuthInput v-model="email" label="Email" type="email" :required="true" />
+            <AuthInput v-model="email" label="Email" type="email" :required="true" :error="email_error"/>
             <AuthInput v-model="password" label="Password" type="password" :required="true" />
             <div class="auth-form-footer">
                 <div class="form-block">
@@ -17,15 +13,6 @@
                 </div>
             </div>
         </AuthForm>
-        <!-- <AuthForm title="Xác nhậm email" @submit.prevent="confirmEmail">
-            <AuthInput v-model="email" label="Email" type="email" :required="true" />
-            <AuthInput v-model="code" label="Code" :required="true" />
-            <div class="auth-form-footer">
-                <div class="form-block">
-                    <input class="form-control btn" type="submit" name="submit" value="Sign In" />
-                </div>
-            </div>
-        </AuthForm> -->
     </div>
 </div>
 </template>
@@ -33,7 +20,6 @@
 <script lang="ts">
 import {
     Component,
-    Vue,
     Mixins
 } from 'vue-property-decorator'
 
@@ -42,25 +28,27 @@ import {
 } from '../mixins/auth'
 
 @Component({
+    middleware: "guest",
     components: {},
 })
 export default class Register extends Mixins(AuthMixin) {}
 </script>
 
 <style lang="less">
-html {
-    background: url('../static/background_login.jpg') no-repeat;
-    background-size: cover;
-    font-family: Arial, Helvetica, sans-serif;
-}
 
 .login-block {
-    position: absolute;
-    right: 0;
-    padding: 60px;
-    width: 50%;
-    height: 100%;
+    position: fixed;
+    inset: 0;
     background-color: #fff;
+    display: flex;
+
+    .login-img {
+        width: 50%;    
+        height: 100%;
+        .img {
+            height: 100%;
+        }
+    }
 
     a {
         text-decoration: none;
@@ -73,10 +61,15 @@ html {
 
     .login-main {
         z-index: 2;
+        flex: 1;
+        background-color: #fff;
+        padding: 20px;
+        display: flex;
+        align-items: center;
 
         .login-another {
             .register {
-                margin-bottom: 40px;
+                margin-bottom: 80px;
                 text-align: right;
                 font-size: 14px;
             }

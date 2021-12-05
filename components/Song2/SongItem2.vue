@@ -1,22 +1,31 @@
 <template>
-<div class="profile-container-content-right-info-song">
-    <div class="profile-container-content-right-info-song-avatar">
-        <img :src="image" alt="">
-    </div>
-    <div class="profile-container-content-right-info-song-text">
-        <div class="profile-container-content-right-info-song-text-name">{{SongName}}</div>
-        <div class="profile-container-content-right-info-song-text-author">HoangDang</div>
-        <div class="profile-container-content-right-info-song-text-list">
+<div :class="'profile-container-content-right-info-song ' + isPlaying">
+    <nuxt-link to="/listen-music-detail" class="profile-container-content-right-info-song-avatar" @click="setCurrentSong">
+        <img :src="'/api/v2/public/musics/' + song.id + '/image'" alt="">
+    </nuxt-link>
+    <div class="profile-container-content-right-info-song-text"  @click="setCurrentSong">
+        <div class="profile-container-content-right-info-song-text-name">{{song.name}}</div>
+        <div class="profile-container-content-right-info-song-text-author">{{song.author}}</div>
+        <div v-if="type === 'trending'" class="profile-container-content-right-info-song-text-list">
             <div class="profile-container-content-right-info-song-text-list-item">
-                <fa icon="play"></fa>9,950
-            </div>
-            <div class="profile-container-content-right-info-song-text-list-item">
-                <fa icon="heart"></fa>390
-            </div>
-            <div class="profile-container-content-right-info-song-text-list-item">
-                <fa icon="comment-alt"></fa>200
+                <span style="margin-right: 10px;">Today view: </span><i class="fas fa-play"></i>{{song.today_view_count}}
             </div>
         </div>
+         <div v-else class="profile-container-content-right-info-song-text-list">
+            <div class="profile-container-content-right-info-song-text-list-item">
+                <i class="fas fa-play"></i>{{song.view_count}}
+            </div>
+            <div class="profile-container-content-right-info-song-text-list-item">
+                <i class="fas fa-heart"></i>{{song.like_count}}
+            </div>
+        </div>
+    </div>
+    <div v-if="type === 'update-music'" class="album-action" style="display: flex; justify-content: flex-end; flex: 1;">
+        <nuxt-link :to="'/update-music/' + song.id" class="album-action-update al-item" style="margin-right: 10px;">
+            <div class="modal-box-create-submit">
+                Update
+            </div>
+        </nuxt-link>
     </div>
 </div>
 </template>
@@ -27,37 +36,52 @@ import {
     Component,
     Prop
 } from 'vue-property-decorator';
-import Song from '../../type';
+import store from '~/controllers/store';
 
 @Component
 export default class AlbumItem2 extends Vue {
-    @Prop() currentSong: Song
-    get SongName() {
-        return this.currentSong?.name
+    @Prop() song: any
+    @Prop() isPlaying: string
+    @Prop() type: string
+
+    setCurrentSong() {
+        store.value.currentSong = this.song
+        this.addPlaylist()
+        localStorage.setItem("currentSong", JSON.stringify(this.song))
     }
-    get image() {
-        return this.currentSong?.image
+
+    get currentSong() {
+        return store.value.currentSong
     }
-    // name: string = ''
-    // image: string = ''
-    // mounted() {
-    //     if (this.currentSong == undefined) return
-    //     this.name = this.currentSong.name
-    //     this.image = this.currentSong.image
-    // }
+
+    addPlaylist() {
+        if(this.currentSong === false) {
+            store.value.currentSong = this.song
+        }
+        const playlistStore: any = store.value.playlist
+        const indexExistSong = playlistStore.findIndex((song: any) => song.id === this.song.id);
+        if (indexExistSong === -1 || playlistStore.length === 0) {
+            playlistStore.push(this.song)
+        }
+    }
 }
 </script>
 
 <style lang="less">
 .profile-container-content-right-info-song {
-    padding: 7px 0;
+    padding: 7px 14px;
     display: flex;
+    width: 100%;
+    cursor: pointer;
 
     &-avatar {
-        padding-right: 10px;
-        
+        padding: 0 10px;
+        display: flex;
+        align-items: center;
         img {
-            width: 48px;
+            width: 56px;
+            height: 56px;
+            object-fit: cover;
         }
     }
 
@@ -65,32 +89,51 @@ export default class AlbumItem2 extends Vue {
         color: #999;
 
         &-name {
-            font-size: 12px;
+            font-size: 14px;
         }
 
         &-author {
-            color: #000;
-            font-size: 10px;
+            color: #999;
+            font-size: 12px;
             line-height: 16px;
         }
 
         &-list {
             display: flex;
-            justify-content: space-between;
-            padding: 4px 0;
+            padding-top: 6px;
 
             &-item {
-                margin-right: 20px;
-                font-size: 13px;
+                margin-right: 14px;
+                font-size: 14px;
                 display: flex;
                 align-items: center;
 
-                svg {
+                i {
                     margin-right: 6px;
                     zoom: 0.8;
                 }
             }
         }
     }
+}
+
+.profile-container-content-right-info-song:hover {
+    background-color: rgba(76, 182, 203, 0.3)
+}
+
+.item-title-top,
+.item-title-bot {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #545a5f;
+    font-size: 15px;
+    line-height: 19px;
+    max-width: 140px;
+}
+.item-title-bot {
+    color: #939aa0;
+    font-size: 12px;
 }
 </style>

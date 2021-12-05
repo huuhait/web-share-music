@@ -1,8 +1,12 @@
 <template>
   <div class="z-notification-group">
-    <transition-group class="z-notification-group-topRight" name="z-notification-group-topRight" tag="div">
+    <transition-group class="z-notification-group-topRight" 
+      name="z-notification-group-topRight" 
+      tag="div"
+    >
       <template v-for="child in lstNotificationTopRight">
-        <component :is="child" :key="child.options.key"></component>
+        <component :is="child" :key="child.options.key">
+        </component>
       </template>
     </transition-group>
   </div>
@@ -11,7 +15,7 @@
 <script lang="ts">
 import { Component, Vue } from "nuxt-property-decorator"
 import ZEventBus from "@/library/ZEventBus";
-import { Placement } from "../";
+import { Placement } from "@/types";
  
 @Component({})
 export default class ZNotificationGroup extends Vue {
@@ -34,7 +38,7 @@ export default class ZNotificationGroup extends Vue {
   beforeDestroy() {
     ZEventBus.remove("z-new-notification", this.appendNewNotification)
   }
- 
+  
   appendNewNotification(notification: any) {
     this.childrens.push(notification);
   }
@@ -45,7 +49,7 @@ export default class ZNotificationGroup extends Vue {
 .z-notification {
   position: relative;
   display: flex;
-  background-color: var(--dropdown-background);
+  background-color: #f2f2f2;
   padding: 16px 24px;
   margin-bottom: 16px;
   overflow: hidden;
@@ -82,13 +86,13 @@ export default class ZNotificationGroup extends Vue {
     font-size: 16px;
     line-height: 24px;
     margin-bottom: 8px;
-    color: var(--white-color);
+    color: red;
   }
  
   &-description {
     font-size: 14px;
     font-weight: normal;
-    color: var(--action-color);
+    color: red;
   }
  
   &-close {
@@ -96,11 +100,14 @@ export default class ZNotificationGroup extends Vue {
     cursor: pointer;
     position: absolute;
     right: 14px;
-    color: var(--gray-color);
+    color: gray;
     transition: all 0.3s;
- 
+    img {
+      height: 20px;
+      width: 20px;
+    }
     &:hover {
-      color: var(--action-color);
+      color: #4cb6cb;
     }
   }
 }

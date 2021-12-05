@@ -1,119 +1,360 @@
 import { Vue, Component } from 'vue-property-decorator';
+import store from '~/controllers/store';
+import ApiClient from '~/library/ApiClient';
 
-@Component({})
+@Component
+export default class MusicMixin extends Vue {
+    name: string = ""
+    author: string = "Identity unknown"
+    description: string | null = null
+    state: string = "active"
+    music: File
+    image: File | any
+    url_music: string = ''
+    url_image: string = ''
+    contentCmt: string = ''
+    contentReply: string = ''
+    idMusic: any = this.currentSong.id
+    musics: any[] = []
+    privacy: string = "true"
+    idCmt: any = 8
+    comments: any = []
+    likeState: boolean = this.currentSong.liked
+    likedMusics: any
+    albums: any
+    commentsAlbum: any = []
 
-export class MusicMixin extends Vue {
-  protected _data: any
-  Wavesurfer: any
-  wavesurfer: any
-  muted: boolean = true
-  currentTrack: number = 0
-  isPlay: boolean = true
-  isReplay: boolean = true
-  myList: String[] = [
-      '../KawakiWoAmeku-Minami-5862585.mp3',
-      '../KaikaiKitan-Eve.mp3',
-      '../IroKousuiHorimiyaOpening-YohKamiyama-7026438.mp3',
-      '../CryBabyTokyoRevengersOpening-OfficialHigeDandism-7014853.mp3',
-      '../Lost In Paradise (Jujutsu Kaisen Ending) - ALI, AKLO.mp3'
-  ]
-  // data() {
-  //     return {
-  //         totalTime: 0,
-  //         currentTime: 0,
-  //         isloading: true
-  //     }
-  // }
-  // mounted() {
-  //     if (process.browser) {
-  //         this.Wavesurfer = require('wavesurfer.js');
-  //     }
-  //     this.createWavesuffer()
-  //     this.loadNextSong()
-  // }
-  createWave() {
-    if (process.browser) {
-      this.Wavesurfer = require('wavesurfer.js');
+    get getUpdateAlbum(): any {
+        return store.value.updateAlbum
     }
-    this.createWavesuffer()
-    this.loadNextSong()
-  }
-  createWavesuffer() {
-      this.wavesurfer = this.Wavesurfer.create({
-          container: '#hoang',
-          waveColor: "#eee",
-          progressColor: "#4cb6cb",
-          cursorColor: "#4cb6cb",
-          cursorWidth: 0,
-          barWidth: 3,
-          barRadius: 3,
-          normalize: true,
-          partialRender: true,
-          responsive: true,
-          hideCursor: true
-      });
-  }
 
-  play() {
-      this.wavesurfer.playPause()
-      this.isPlay = !this.isPlay
-  }
-  rePlay() {
-      const wave = this.wavesurfer
-      wave.on('finish', () => {
-          wave.play([0])
-      });
-  }
+    albumId: number = this.getUpdateAlbum.id
+    albumName: string = this.getUpdateAlbum.name
+    albumDescription: string = this.getUpdateAlbum.description
+    albumImage: File = this.getUpdateAlbum.image
+    albumPrivate: string = "private"
+    albumMusics: any[] = []
 
-  pre_skip() {
-      this.wavesurfer.skipBackward(5)
-  }
+    onImageChanged(event: any) {
+        this.image = event.target.files[0];
+        this.url_image = URL.createObjectURL(this.image);
+    }
 
-  next_skip() {
-      this.wavesurfer.skipForward(5)
-  }
+    onFileChanged(event: any) {
+        this.music = event.target.files[0];
+        this.url_music = URL.createObjectURL(this.music);
+    }
 
-  mute() {
-      this.wavesurfer.setMute(this.muted)
-      this.muted = !this.muted;
-  }
+    checkLogin() {
+        if(!store.value.user) {
+            return this.$router.push('/login')
+        }
+    }
 
-  loadNextSong() {
-      this.wavesurfer.destroy()
-      this.createWavesuffer()
+    get currentSong(): any {
+        return store.value.currentSong
+    }
 
-      const currentSong = this.currentTrack
-      const that = this
-      this.wavesurfer.load(this.myList[currentSong]);
-      this.wavesurfer.on('finish', () => {
-          if (that.isReplay) {
-              wave.play([0])
-          } else {
-              this.loadNextSong();
-          }
-      });
+    async createMusic() {
+        try {
+            const form = new FormData()
+            form.set('name', this.name);
+            form.set('author', this.author);
+            form.set('description', this.description || "");
+            form.set('state', this.state);
+            form.set('music', this.music as File);
+            form.set('image', this.image as File);
+            await new ApiClient().post("/resource/musics", form )
+        } catch (error) {
+            return error;            
+        }
+    }
 
-      const wave = this.wavesurfer
+    async getAllMusics() {
+        try {
+            const data = await this.$axios.$get("http://localhost:3000/api/v2/resource/musics")
+            const newSongs = await this.$axios.$get("http://localhost:3000/api/v2/public/musics?order_by=created_at&ordering=desc&limit=10")
 
-      // wave.on('loading', function (x) {
-      //     console.log(x);
-      // });
-      wave.on('ready', function () {
-          wave.play();
-          console.log('aaa')
-      });
-      this._data.isloading = false
-      wave.on('error', function (e: any) {
-          console.warn(e);
-      });
+            const filterPendingData = data.filter((music: any) => music.state !== "pending" )
+            const filterPendingNewSongs = newSongs.filter((music: any) => music.state !== "pending" )
 
-      wave.on('audioprocess', function () {
-          if (wave.isPlaying()) {
-              that._data.totalTime = Math.round(wave.getDuration())
-              that._data.currentTime = Math.round(wave.getCurrentTime())
-          }
-      });
+            this.musics = await filterPendingData
+            store.value.music = await filterPendingData
+            store.value.newSongs = await filterPendingNewSongs
+        } catch (error) {
+            return error
+        }
+    }
 
-      this.currentTrack++
-  }
+    async getMusic(id: number) {
+        try {
+            const data = await this.$axios.$get(`http://localhost:3000/api/v2/resource/musics/${id}`)
+            store.value.currentSong = await data
+        } catch (error) {
+            return error
+        }
+    }
+
+    async like(id: number) {
+        this.checkLogin()
+        try {
+            const that = this
+            if(Object.prototype.hasOwnProperty.call(store.value, 'currentSong')) {
+                if(Object.prototype.hasOwnProperty.call(that.currentSong, 'liked')) {
+                    that.currentSong.liked = true
+                }
+                that.currentSong.like_count += 1
+            }
+            await new ApiClient().post("/resource/musics/" + id + "/like")
+
+            await new ApiClient().get("/resource/musics/" + id)
+
+            await that.getAllMusics()
+        } catch (error) {
+            return error
+        }
+    }
+
+    async unLike(id: number) {
+        this.checkLogin()
+        try {
+            const that = this
+            if(Object.prototype.hasOwnProperty.call(store.value, 'currentSong')) {
+                if(Object.prototype.hasOwnProperty.call(that.currentSong, 'liked')) {
+                    that.currentSong.liked = false
+                }
+                that.currentSong.like_count -= 1
+            }
+            
+            await new ApiClient().post("/resource/musics/" + id + "/unlike")
+
+            await new ApiClient().get("/resource/musics/" + id)
+
+            await that.getAllMusics()
+        } catch (error) {
+            return error
+        }
+    }
+
+    async getAllComment() {
+        try {
+            const data = await this.$axios.$get(`http://localhost:3000/api/v2/public/musics/${this.currentSong.id}/comments`)
+            this.comments = await data
+        } catch (error) {
+            return error
+        }
+    }
+
+    async comment() {
+        this.checkLogin()
+        try {
+            await new ApiClient().post(`/resource/musics/${this.currentSong.id}/comment`, {
+                content: this.contentCmt
+            })
+            this.contentCmt = ''
+            await this.getAllComment()
+        } catch (error) {
+            return error
+        }
+    }
+
+    async likeCmt(id: number) {
+        this.checkLogin()
+        try {
+            await new ApiClient().post("/resource/comments/" + id + "/like")
+
+            await this.getAllComment()
+        } catch (error) {
+            return error
+        }
+    }
+
+    async unLikeCmt(id: number) {
+        this.checkLogin()
+        try {
+            await new ApiClient().post("/resource/comments/" + id + "/unlike")
+
+            await this.getAllComment()
+        } catch (error) {
+            return error
+        }
+    }
+
+    async replyComment(id: number) {
+        this.checkLogin()
+        try {
+            await new ApiClient().post(`/resource/comments/reply`, {
+                comment_id: id,
+                content: this.contentReply
+            })
+
+            this.contentReply = ''
+
+            await this.getAllComment()
+        } catch (error) {
+            return error
+        }
+    }
+
+    async likeReply(id: number) {
+        this.checkLogin()
+        try {
+            await new ApiClient().post("/resource/comments/reply/" + id + "/like")
+
+            await this.getAllComment()
+        } catch (error) {
+            return error
+        }
+    }
+
+    async unLikeReply(id: number) {
+        this.checkLogin()
+        try {
+            await new ApiClient().post("/resource/comments/reply/" + id + "/unlike")
+
+            await this.getAllComment()
+        } catch (error) {
+            return error
+        }
+    }
+
+    async createAlbum(idMusic: number) {
+        try {
+            const form = new FormData()
+            form.append('name', this.name);
+            form.append('description', this.description || "");
+            form.append('image', this.image as File);
+            form.append('musics', JSON.stringify([idMusic]));
+            await new ApiClient().post("/resource/albums", form)
+
+            this.name = ""
+            this.description = null
+            this.privacy = ""
+            this.image = null
+            this.musics = []
+
+            await this.getAlbums()
+        } catch (error) {
+            return error
+        }
+    }
+
+    async getAlbums() {
+        try {
+            const data = await this.$axios.$get("http://localhost:3000/api/v2/resource/albums")
+            this.albums = await data
+            store.value.albums = await data
+        } catch (error) {
+            return error
+        }
+    }
+
+    async getAlbum(albumId: number) {
+        try {
+            const data = await this.$axios.$get(`http://localhost:3000/api/v2/resource/albums/${albumId}`)
+            return data
+        } catch (error) {
+            return error
+        }
+    }
+
+    async addMusicToAlbum(album: any, idMusic: number) {
+        try {
+            const Arr: any = [] 
+            album.music.map((music: any) => Arr.push(music.id))
+
+            const form = new FormData()
+            form.append("name", album.name)
+            form.append("musics", JSON.stringify([...Arr, idMusic]))
+            
+            await this.$axios.$put(`http://localhost:3000/api/v2/resource/albums/${album.id}`, form)
+
+            await this.getAlbums()
+        } catch (error) {
+            return error
+        }
+    }
+
+    async getAllCommentAlbum() {
+        try {
+            const data = await this.$axios.$get(`http://localhost:3000/api/v2/public/albums/${store.value.currentAlbum.id}/comments`)
+            this.commentsAlbum = await data
+        } catch (error) {
+            return error
+        }
+    }
+
+    async commentAlbum() {
+        this.checkLogin()
+        try {
+            await new ApiClient().post(`/resource/albums/${store.value.currentAlbum.id}/comment`, {
+                content: this.contentCmt
+            })
+            this.contentCmt = ''
+            await this.getAllCommentAlbum()
+        } catch (error) {
+            return error
+        }
+    }
+
+    async replyAlbum() {
+        try {
+            await new ApiClient().post(`/resource/albums/${store.value.currentAlbum.id}/reply`, {
+                content: this.contentCmt
+            })
+            this.contentCmt = ''
+            await this.getAllCommentAlbum()
+        } catch (error) {
+            return error
+        }
+    }
+
+
+    async likeAlbum(id: number) {
+        this.checkLogin()
+        try {
+            const that = this
+
+            await new ApiClient().post("/resource/albums/" + id + "/like")
+
+            if(Object.prototype.hasOwnProperty.call(store.value, 'currentAlbum')) {
+                if(Object.prototype.hasOwnProperty.call(store.value.currentAlbum, 'liked')) {
+                    store.value.currentAlbum.liked = true
+                }
+                store.value.currentAlbum.like_count += 1
+            }
+            await that.getAllMusics()
+        } catch (error) {
+            return error
+        }
+    }
+
+    async unLikeAlbum(id: number) {
+        this.checkLogin()
+        try {
+            const that = this
+
+            await new ApiClient().post("/resource/albums/" + id + "/unlike")
+
+            if(Object.prototype.hasOwnProperty.call(store.value, 'currentAlbum')) {
+                if(Object.prototype.hasOwnProperty.call(store.value.currentAlbum, 'liked')) {
+                    store.value.currentAlbum.liked = false
+                }
+                store.value.currentAlbum.like_count -= 1
+            }
+            await that.getAllMusics()
+        } catch (error) {
+            return error
+        }
+    }
+
+
+    async deleteAlbum(id: number) {
+        try {
+            await this.$axios.$delete(`http://localhost:3000/api/v2/resource/albums/${id}`)
+            await this.getAlbums()
+        } catch (error) {
+            return error
+        }
+    }
 }

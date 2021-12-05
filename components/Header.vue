@@ -1,92 +1,96 @@
 <template>
-<header class="header">
-    <div class="header-logo">
-        <NuxtLink to="./" class="header-logo-link">
-            <i class="fas fa-headphones-alt"></i>
-            <fa icon="headphones"></fa>
-        </NuxtLink>
-    </div>
-    <form class="header-form" role="search">
-        <div class="header-form-search">
-            <div class="header-form-search-input">
-                <span class="header-form-search-icon">
-                    <button type="submit" class="">
-                        <fa icon="search"></fa>
-                    </button>
-                </span>
-                <input type="text" class="" placeholder="Search songs, albums..." />
-            </div>
+    <header class="header">
+        <div class="header-logo">
+            <nuxt-link to="/" class="header-logo-link">
+                <i class="fas fa-headphones"></i>
+            </nuxt-link>
         </div>
-    </form>
-    <div class="header-right">
-        <ul class="header-right-list">
-            <li class="header-right-bell">
-                <a href="#" class="header-right-bell-link" data-toggle="dropdown">
-                    <fa icon="bell"></fa>
-                    <span class="header-right-bell-count" style="display: inline-block">3</span>
-                </a>
-            </li>
-            <li class="header-right-user">
-                <div class="header-right-user-link" data-toggle="dropdown">
-                    {{user && user.first_name + '' + user.last_name}}
-                    <!-- <b class="caret"></b> -->
-                    <span>
-                        <img src="../static/a2.png" alt="..." v-if="user" />
-                        <img src="../static/Placeholder.jpg" alt="..." v-else />
-                    </span>
-                    <ul class="header__navbar-user-menu" v-if="!user">
-                        <li class="header__navbar-user-item">
-                            <!-- <NuxtLink to="/profile">Tài khoản của tôi</NuxtLink> -->
-                        </li>
-                        <li class="header__navbar-user-item header__navbar-user-item--separate">
-                            <NuxtLink to="/login" class="header__navbar-user-item-link">Đăng nhập</NuxtLink>
-                        </li>
-                        <li class="header__navbar-user-item header__navbar-user-item--separate">
-                            <NuxtLink to="/register" class="header__navbar-user-item-link">Đăng ký</NuxtLink>
-
-                        </li>
-                    </ul>
-                    <ul class="header__navbar-user-menu" v-else>
-                        <li class="header__navbar-user-item">
-                            <!-- <NuxtLink to="/profile">Tài khoản của tôi</NuxtLink> -->
-                        </li>
-                        <li class="header__navbar-user-item header__navbar-user-item--separate">
-                            <NuxtLink to="/profile" class="header__navbar-user-item-link">Tài khoản của tôi</NuxtLink>
-                        </li>
-                        <li class="header__navbar-user-item header__navbar-user-item--separate">
-                            <div class="header__navbar-user-item-link" @click="logout">Đăng xuất</div>
-                        </li>
-                    </ul>
+        <form class="header-form" role="search">
+            <div class="header-form-search">
+                <div class="header-form-search-input">
+                    <client-only>
+                    <form class="header-form-search-icon" @submit.prevent="redirectSearchPage">
+                        <button type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <input v-model="name" type="text" class="" placeholder="Search songs, albums..." />
+                    </form>
+                    </client-only>
                 </div>
-            </li>
-        </ul>
-    </div>
-</header>
+            </div>
+        </form>
+        <div class="header-right">
+            <ul class="header-right-list">
+                <nuxt-link v-if="user && user.role === 'admin'" to="/upload-music" class="header-right-upload">
+                    <i class="fas fa-cloud-upload-alt"></i>Upload
+                </nuxt-link>
+                <li class="header-right-user">
+                    <div class="header-right-user-link" data-toggle="dropdown">
+                        {{user && user.first_name + ' ' + user.last_name}}
+                        <span>
+                            <img v-if="user" :src="'api/v2/public/users/' + user.uid + '/avatar'" alt="..."/>
+                            <img v-else src="/Placeholder.jpg" alt="">
+                        </span>
+                        <ul v-if="!user" class="header__navbar-user-menu" >
+                            <li class="header__navbar-user-item">
+                                <!-- <NuxtLink to="/profile">Tài khoản của tôi</NuxtLink> -->
+                            </li>
+                            <li class="header__navbar-user-item header__navbar-user-item--separate">
+                                <NuxtLink to="/login" class="header__navbar-user-item-link">Đăng nhập</NuxtLink>
+                            </li>
+                            <li class="header__navbar-user-item header__navbar-user-item--separate">
+                                <NuxtLink to="/register" class="header__navbar-user-item-link">Đăng ký</NuxtLink>
+
+                            </li>
+                        </ul>
+                        <ul v-else class="header__navbar-user-menu">
+                            <li class="header__navbar-user-item header__navbar-user-item--separate">
+                                <NuxtLink to="/profile" class="header__navbar-user-item-link">Tài khoản của tôi</NuxtLink>
+                            </li>
+                            <li v-if="user.state !== 'active'" class="header__navbar-user-item header__navbar-user-item--separate">
+                                <NuxtLink to="/confirm-email" class="header__navbar-user-item-link">Xác nhận email</NuxtLink>
+                            </li>
+                            <li class="header__navbar-user-item header__navbar-user-item--separate">
+                                <NuxtLink to="/change-password" class="header__navbar-user-item-link">Thay đổi mật khẩu</NuxtLink>
+                            </li>
+                            <li class="header__navbar-user-item header__navbar-user-item--separate">
+                                <div class="header__navbar-user-item-link" @click="logout">Đăng xuất</div>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </header>
 </template>
 
 <script lang="ts">
 import {
-    Vue,
-    Component
+    Component,
+    Mixins
 } from 'vue-property-decorator';
 import store from "../controllers/store";
+import { AuthMixin } from '~/mixins';
 
 @Component
-export default class Header extends Vue {
+export default class Header extends Mixins(AuthMixin) {
     user: any = '';
-    $axios: any;
+    name: string = ""
 
+    get userStore() {
+        return store.value.user
+    }
+    
     data() {
         this.user = store.value.user
+
         return {
-            user: this.user
+            user: this.user,
         }
     }
 
-    async logout() {    
-        await this.$axios.delete('http://localhost:3000/api/v2/identity/session');
-        store.value.user = ""
-        this.user = store.value.user
+    redirectSearchPage() {
+        this.$router.push(`/search/find?name=${this.name}`)
     }
 }
 </script>
@@ -124,30 +128,15 @@ export default class Header extends Vue {
         .header-right-list {
             display: flex;
             list-style: none;
-
-            .header-right-bell {
-                width: 60px;
+            
+            .header-right-upload {
                 display: flex;
                 align-items: center;
+                color: #545a5f;
+                cursor: pointer;
 
-                &-link {
-                    text-decoration: none;
-
-                    svg {
-                        color: #545a5f;
-                    }
-
-                    .header-right-bell-count {
-                        position: relative;
-                        top: -10px;
-                        padding: 3px 6px;
-                        margin-left: -10px;
-                        background-color: #f05050;
-                        border-radius: 100px;
-                        color: #fff;
-                        line-height: 0.8;
-                        font-size: 14px;
-                    }
+                i {
+                    margin-right: 10px;
                 }
             }
 
@@ -230,16 +219,6 @@ export default class Header extends Vue {
                         height: 8px;
                     }
 
-                    // .caret {
-                    //     display: block;
-                    //     width: 0;
-                    //     height: 0;
-                    //     margin-left: 2px;
-                    //     border-top: 4px solid;
-                    //     border-right: 4px solid transparent;
-                    //     border-left: 4px solid transparent;
-                    // }
-
                     b {
                         font-weight: bold;
                         margin-left: 6px;
@@ -251,6 +230,8 @@ export default class Header extends Vue {
                         img {
                             border-radius: 500px;
                             height: 40px;
+                            width: 40px;
+                            object-fit: cover;
                         }
                     }
                 }
@@ -268,10 +249,12 @@ export default class Header extends Vue {
         align-items: center;
         flex: 1;
         padding: 0 15px;
+        justify-content: center;
 
         .header-form-search {
             &-input {
                 display: flex;
+                width: 400px;
 
                 .header-form-search-icon {
                     display: flex;
@@ -291,8 +274,9 @@ export default class Header extends Vue {
                 input {
                     margin: 15px 0;
                     height: 30px;
+                    width: 100%;
                     padding: 5px 10px;
-                    font-size: 13px;
+                    font-size: 14px;
                     line-height: 1.5;
                     border-radius: 3px;
                     outline: none;

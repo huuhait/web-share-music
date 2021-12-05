@@ -1,15 +1,31 @@
 <template>
-<div class="login-block">
-    <div class="login-main">
-        <AuthForm title="Xác nhậm email" @submit.prevent="confirmEmail">
-            <AuthInput v-model="email" label="Email" type="email" :required="true" value='email'/>
-            <AuthInput v-model="code" label="Code" :required="true" />
-            <div class="auth-form-footer">
-                <div class="form-block">
-                    <input class="form-control btn" type="submit" name="submit" value="Sign In" />
+<div class="container" style="padding: 42px">
+    <div class="update-profile-container" style="display: flex">
+        <div class="update-profile-container-right">
+            <AuthForm title="Xác thực email" @submit.prevent="sendEmailCode">
+                <div style="display: flex">
+                    <div>
+                        Mã xác nhận sẽ được gửi đến email 
+                        <span style="color: #6039de">
+                            {{user.email}}
+                        </span>
+                    </div>
+                    <div style="min-width: 120px">
+                        <button type="submit" class="update-profile-container-right-form-btn-button">
+                            Gửi mã
+                        </button>
+                    </div> 
                 </div>
-            </div>
-        </AuthForm>
+            </AuthForm >
+            <AuthForm class="update-profile-container-right-form" 
+                @submit.prevent="confirmEmail" 
+            >
+                <AuthInput v-model="code" label="Xác nhận mật khẩu" :required="true" />
+                <div class="update-profile-container-right-form-btn">
+                    <button type="submit" class="update-profile-container-right-form-btn-button">Xác nhận</button>
+                </div> 
+            </AuthForm>
+        </div>
     </div>
 </div>
 </template>
@@ -17,62 +33,124 @@
 <script lang="ts">
 import {
     Component,
-    Vue,
     Mixins
 } from 'vue-property-decorator'
-
 import {
     AuthMixin
-} from '@/mixins/auth'
-import store from "@/controllers/store";
+} from '../mixins';
+import store from '~/controllers/store';
 
 @Component({
     components: {},
 })
-export default class Confirm_Email extends Mixins(AuthMixin) {
-    email: any = '';
+export default class Change_Password extends Mixins(AuthMixin) {
+    layout() {
+        return 'music'
+    }
+
+    user: any = '';
 
     data() {
-        this.email = store.value.email
+        this.user = store.value.user
         return {
-            email: this.email
+            user: this.user,
         }
     }
 }
 </script>
 
 <style lang="less">
-html {
-    background: url('../static/background_login.jpg') no-repeat;
-    background-size: cover;
-    font-family: Arial, Helvetica, sans-serif;
-}
+.container {
+    background-color: #f2f4f8;
+    display: flex;
+    justify-content: center;
+    padding: 30px;
 
-.login-block {
-    position: absolute;
-    right: 0;
-    padding: 60px;
-    width: 50%;
-    height: 100%;
-    background-color: #fff;
+    .update-profile-container {
+        width: 80%;
+        display: flex;
+        margin: auto;
+        background-color: #fff;
+        padding: 40px 20px;
 
-    a {
-        text-decoration: none;
-        color: rgb(119, 85, 229);
-    }
+        &-left {
+            width: 30%;
+            border-right: 1px solid #f2f2f2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
 
-    a:hover {
-        text-decoration: underline;
-    }
+            &-img {
+                text-align: center;
 
-    .login-main {
-        z-index: 2;
+                img {
+                    width: 160px;
+                    margin-bottom: 20px;
+                }
 
-        .login-another {
-            .register {
-                margin-bottom: 40px;
-                text-align: right;
-                font-size: 14px;
+                label {
+                    border: 1px solid #f2f2f2;
+                    padding: 10px;
+                    background-color: #fff;
+                    color: #000;
+                    display: flex;
+                    align-items: center;
+
+                    i {
+                        margin-right: 10px;
+                        color: #4cb6cb;
+                    }
+                }
+
+                input[type="file"] {
+                    display: none;
+                }
+            }
+        }
+
+        &-right {
+            flex: 1;
+            padding: 20px 60px;
+
+            &-form {
+                &-input {
+                    margin: 20px 0;
+                    display: flex;
+                    align-items: center;
+
+                    span {
+                        width: 160px;
+                        display: block;
+                    }
+
+                    input {
+                        flex: 1;
+                        padding: 0 12px;
+                        width: 100%;
+                        height: 46px;
+                        display: block;
+                        background-color: #f5f7f9;
+                        border: 1px solid #fff;
+                        border-radius: 5px;
+                        outline: none;
+                    }
+                }
+
+                &-btn {
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 60px;
+
+                    &-button {
+                        padding: 10px 20px;
+                        background-color: #4cb6cb;
+                        outline: none;
+                        border: none;
+                        border-radius: 20px;
+                        color: #fff;
+                    }
+                }
             }
         }
     }

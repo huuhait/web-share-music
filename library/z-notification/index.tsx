@@ -53,7 +53,8 @@ const createNotification = (type: NotificationType) => {
               </div>
             </div>
             <div class="z-notification-close">
-              <i class="z-icon-close" onClick={this.close} />
+              {/* <i class="z-icon-close" onClick={this.close} /> */}
+              <img src="/svg-close-icon-28.jpg"  onClick={this.close} alt="" />
             </div>
           </div>
         )
@@ -61,7 +62,7 @@ const createNotification = (type: NotificationType) => {
       mounted() {
         this.$data.closeTimeout = setTimeout(() => {
           this.close();
-        }, options.duration || 7500);
+        }, options.duration || 7500000);
       }
     })
  

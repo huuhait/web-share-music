@@ -1,53 +1,53 @@
 <template>
 <div>
     <Header />
-    <!-- <div>
-        <div>
-            <div class="container">
-                <div class="container-listen">
-                    <div class="container-listen-main">
-                        <div class="container-listen-main-left">
-                            <div class="container-listen-main-left-top">
-                                <div class="container-listen-main-left-top-play">
-                                    <fa @click='rePlay' icon="pause" v-if="isPlay"></fa>
-                                    <fa @click='rePlay' icon="play" v-else></fa>
-                                </div>
-                                <div class="container-listen-main-left-top-name">
-                                    <div class="container-listen-main-left-top-name-song">『Eve - 呪術廻戦 / Kaikai Kitan』Jujutsu Kaisen OP full</div>
-                                    <div class="container-listen-main-left-top-name-author">unDer</div>
-                                </div>
-                                <div class="container-listen-main-left-top-info">
-                                    <div class="container-listen-main-left-top-info-time">1 year ago</div>
-                                    <div class="container-listen-main-left-top-info-tag"># Rock</div>
-                                </div>
-                            </div>
-                            <div class="container-listen-main-left-bot">
-                                <div v-if="isloading" style="color: #fff; font-size: 40px;">Loading ... </div>
-                                <div id="hoang">
-                                </div>
-                            </div>
+    <div class="container-music">
+        <div class="container-music-listen" :style="isMusicDetail">
+            <div class="container-music-listen-main">
+                <div class="container-music-listen-main-left">
+                    <div class="container-music-listen-main-left-top">
+                        <div class="container-music-listen-main-left-top-play">
+                            <i v-if="isPlaying" class="fa fa-pause" @click='play'></i>
+                            <i v-else class="fa fa-play" @click='play'></i>
                         </div>
-                        <div class="container-listen-main-right">
-                            <img src="https://i1.sndcdn.com/artworks-cvw9KDLdyuKyMj8N-W8QGtA-t500x500.jpg" alt="">
+                        <div class="container-music-listen-main-left-top-name">
+                            <div class="container-music-listen-main-left-top-name-song">{{currentSong.name}}</div>
+                            <div class="container-music-listen-main-left-top-name-author">{{currentSong.author}}</div>
+                        </div>
+                        <div class="container-music-listen-main-left-top-info">
+                            <div class="container-music-listen-main-left-top-info-time">1 year ago</div>
+                        </div>
+                    </div>
+                    <div class="container-music-listen-main-left-bot">
+                        <div v-if="isLoading" class="loading">
+                            <img  src="https://c.tenor.com/I6kN-6X7nhAAAAAj/loading-buffering.gif" style="width: 50px; height: 50px; justify-content: center;" />
+                        </div>
+                        <div id="hoang">
                         </div>
                     </div>
                 </div>
+                <div class="container-music-listen-main-right">
+                    <img v-if="currentSong" :src="'/api/v2/public/musics/' + currentSong.id + '/image'" alt="">
+                </div>
             </div>
         </div>
-    </div> -->
-    <Nuxt/>
-    <Footer />
+    </div>
+    <Nuxt />
+    <ZNotificationGroup />
+    <div v-if="currentSong">
+        <Footer />
+    </div>
 </div>
 </template>
 
 <script lang="ts">
 import {
     Component,
-    Vue
+    Vue,
 } from 'nuxt-property-decorator'
 import Header from '../components/Header.vue'
 import Footer from '../components/Footer.vue'
-import store from "../controllers/store";
+import store from '~/controllers/store'
 
 @Component({
     components: {
@@ -57,40 +57,68 @@ import store from "../controllers/store";
 })
 
 export default class Music extends Vue {
-   
-    data2: {
-        isMusicDetailPage: false
+    get wavesurfer(): any {
+        return store.value.wavesurfer
     }
+
+    get currentSong(): any {
+        return store.value.currentSong
+    }
+
+    get isMusicDetail() {
+        return store.value.isMusicDetail
+    }
+
+    get isPlaying() {
+        return store.value.isPlaying
+    }
+
+    get isLoading() {
+        return store.value.isLoading
+    }
+
     head() {
         return {
-            title: 'Trang chủ',
+            title: this.currentSong.name,
         }
     }
-    isPlay() {
 
-    }
-    rePlay() {
+    mounted() {
+        store.value.isMusicDetail = "position: absolute; top: -500px;"
 
+        if(process.client){
+            if(!store.value.currentSong && localStorage.getItem("currentSong")) {
+                const songLocal: any = localStorage.getItem("currentSong")
+                store.value.currentSong = JSON.parse(songLocal);
+                store.value.playlist = [store.value.currentSong]
+            }
+        }
     }
-    add(bool: any) {
-        this.data2.isMusicDetailPage = bool
-        console.log(this.data2.isMusicDetailPage)
-    }
-    
 
+    play() {
+        store.value.isPlaying = !store.value.isPlaying
+        this.wavesurfer.playPause()
+    }
 }
 </script>
 
 <style lang="less">
-.container {
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+.container-music {
     background-color: #f2f4f8;
     display: flex;
     justify-content: center;
     flex-direction: row;
 
-    .container-listen {
+    &-listen {
         width: 1200px;
         background-color: #fff;
+        position: absolute; 
+        top: -500px;
 
         &-main {
             padding: 30px 30px;
@@ -118,7 +146,7 @@ export default class Music extends Vue {
                         height: 60px;
                         width: 60px;
 
-                        svg {
+                        i {
                             color: #fff;
                             zoom: 1.4;
                         }
@@ -163,6 +191,11 @@ export default class Music extends Vue {
                     flex: 1;
                     justify-content: center;
 
+                    .loading {
+                        display: flex;
+                        justify-content: center;
+                    }
+
                     #hoang {
                         height: 128px;
                     }
@@ -174,6 +207,8 @@ export default class Music extends Vue {
 
                 img {
                     width: 340px;
+                    height: 340px;
+                    object-fit: cover;
                     border-radius: 50%;
                 }
             }
@@ -191,50 +226,12 @@ export default class Music extends Vue {
                     color: #999;
                     margin-bottom: 10px;
 
-                    svg {
+                    i {
                         margin-right: 6px;
                         padding-left: 10px;
                     }
                 }
 
-                .profile-container-content-right-info-song {
-                    padding: 10px 0;
-                    display: flex;
-
-                    &-avatar {
-                        padding: 0 10px;
-                    }
-
-                    &-text {
-                        color: #999;
-
-                        &-name {
-                            font-size: 14px;
-                        }
-
-                        &-author {
-                            color: #000;
-                            font-size: 12px;
-                        }
-
-                        &-list {
-                            display: flex;
-                            justify-content: space-between;
-                            padding: 4px 0;
-                            margin-left: -2px;
-
-                            &-item {
-                                margin-right: 20px;
-                                font-size: 14px;
-
-                                svg {
-                                    margin-right: 6px;
-                                    zoom: 0.8;
-                                }
-                            }
-                        }
-                    }
-                }
             }
 
             &-left {
@@ -303,7 +300,7 @@ export default class Music extends Vue {
                                 &-user {
                                     font-size: 14px;
 
-                                    svg {
+                                    i {
                                         margin-right: 10px;
                                     }
                                 }
@@ -316,7 +313,7 @@ export default class Music extends Vue {
                                     font-size: 12px;
                                     color: #fff;
 
-                                    svg {
+                                    i {
                                         margin-right: 6px;
                                     }
                                 }
@@ -332,7 +329,7 @@ export default class Music extends Vue {
                             &-count {
                                 margin-bottom: 20px;
 
-                                svg {
+                                i {
                                     margin-right: 10px;
                                 }
                             }
@@ -389,7 +386,7 @@ export default class Music extends Vue {
                             margin-left: 16px;
                             color: #333 !important;
 
-                            svg {
+                            i {
                                 margin-right: 6px;
                             }
                         }
@@ -404,7 +401,7 @@ export default class Music extends Vue {
                                 text-decoration: none;
                                 color: #000;
 
-                                svg {
+                                i {
                                     margin-right: 6px;
                                 }
                             }
@@ -413,7 +410,6 @@ export default class Music extends Vue {
                     }
                 }
             }
-
         }
     }
 }
