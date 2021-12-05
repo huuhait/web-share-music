@@ -7,17 +7,19 @@
                     <img src="https://c.tenor.com/I6kN-6X7nhAAAAAj/loading-buffering.gif" style="width: 50px; height: 50px; justify-content: center;" />
                 </div>
                 <div v-else-if="isPlaying && song.id === currentSong.id" @click="setPlayPause">
-                    <i class="far fa-pause-circle" style="color: #fff;"></i>
+                    <i class="far fa-pause-circle" style="color: #dbdbdb;"></i>
                 </div>
                 <div v-else>
-                    <i v-if="song.id === currentSong.id" class="fa fa-play-circle" style="color: #fff;" @click="setPlayPause"></i>
+                    <i v-if="song.id === currentSong.id" class="fa fa-play-circle" style="color: #dbdbdb;" @click="setPlayPause"></i>
                     <i v-else class="fa fa-play-circle" @click="setCurrentSong()"></i>
                 </div>
+            </div>
+            <div class="overlay2">
             </div>
             <div class="overlay-bot">
                 <div class="overlay-bot-left" @click="addPlaylist">
                     <i v-if="!isMusicInPlaylist" class="fa fa-plus-circle"></i>
-                    <i v-else class="fa fa-check-circle" style="color: green;"></i>
+                    <i v-else class="fa fa-check-circle" style="color: #25cd66;"></i>
                 </div>
                 <div class="overlay-bot-right">
                     <div :class="'stage ' + getSetLikedState" style="left: 90%;" @click="setLikedState">
@@ -197,18 +199,16 @@ export default class AlbumItem extends Mixins(MusicMixin) {
     margin-right: -10px;
 }
 
-/* .overlay {
+.overlay2 {
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 2;
-    align-items: center;
-    justify-content: center;
-    display: none;
-} */
+    z-index: 0;
+    border-radius: 6px;
+}
 
 .overlay {
     align-items: center;
@@ -222,13 +222,14 @@ export default class AlbumItem extends Mixins(MusicMixin) {
     display: flex;
     align-items: center;
     height: 100%;
+    z-index: 2;
 }
 
 .overlay i {
     z-index: 3;
-    color: #ccc;
+    color: #999;
     zoom: 2.4;
-    text-shadow: 0 0 3px #000;
+    text-shadow: 0 0 3px #606060;
 }
 
 .overlay i:hover {

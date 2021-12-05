@@ -113,6 +113,8 @@ body {
     display: flex;
     justify-content: center;
     flex-direction: row;
+    max-width: 1200px;
+    margin: auto;
 
     &-listen {
         width: 1200px;

@@ -50,7 +50,7 @@
                                     <div style="zoom: 10;">
                                         <i class="fas fa-comment-alt" style="color: #d1cdcd;"></i>
                                     </div>
-                                    <span>Have no other comments</span>
+                                    <span>Have any other comments</span>
                                 </div>
                             </div>
                             <div v-else>

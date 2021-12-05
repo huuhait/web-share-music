@@ -44,6 +44,7 @@ import {
     Component,
     Vue
 } from 'vue-property-decorator'
+import ApiClient from '~/library/ApiClient'
 
 @Component({
     middleware: "auth",
@@ -99,9 +100,8 @@ export default class music_id extends Vue {
             if( this.music) {
                 form.append("music", this.music as File)
             }
-            form.append("state", "active")
-            await this.$axios.$put(`http://localhost:3000/api/v2/admin/musics/${this.musicItem.id}`, form)
-            await this.$router.push("../profile")
+            await new ApiClient().put(`admin/musics/${this.musicItem.id}`, form)
+            await this.$router.push("/profile")
         } catch (error) {
             return error
         }

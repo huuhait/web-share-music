@@ -87,6 +87,8 @@ import {
 import SongItem2 from './Song2/SongItem2.vue';
 import MusicMixin from '~/mixins/music';
 import store from '~/controllers/store';
+import ApiClient from '~/library/ApiClient';
+import ZNotification from '@/library/z-notification'
 
 @Component({
     components: {
@@ -98,7 +100,7 @@ export default class Modal_box extends Mixins(MusicMixin) {
     album: any = {};
     name: string = ""
     description: string | null = ""
-    image: File
+    image: File | null
     albumMusic: any = []
     url: string | null = null;
     tab_Modal: number = 1
@@ -152,10 +154,37 @@ export default class Modal_box extends Mixins(MusicMixin) {
         this.tab_Modal = numberTab
     }
 
-    async updateAlbum() {
+    async createAlbum(idMusic: number) {
         if(this.name === "") return
         if(!this.image) return
-        
+
+        try {
+            const form = new FormData()
+            form.append('name', this.name);
+            form.append('description', this.description || "");
+            form.append('image', this.image as File);
+            form.append('musics', JSON.stringify([idMusic]));
+            await new ApiClient().post("/resource/albums", form)
+
+            this.name = ""
+            this.description = null
+            this.image = null
+            this.musics = []
+            this.destroy()
+            ZNotification.success({
+                title: "success",
+                description: "Create album successfully"
+            })
+
+            await this.getAlbums()
+        } catch (error) {
+            return error
+        }
+    }
+
+    async updateAlbum() {
+        if(this.name === "") return
+
         try {
             const form = new FormData()
             form.append("name", this.name)
@@ -163,9 +192,13 @@ export default class Modal_box extends Mixins(MusicMixin) {
             form.append("image", this.image as File)
             form.append("musics", JSON.stringify(this.idAlbumMusic))
 
-            await this.$axios.$put(`http://localhost:3000/api/v2/resource/albums/${this.album.id}`, form)
+            await new ApiClient().put(`resource/albums/${this.album.id}`, form)
             await this.getAlbums()
             this.destroy()
+            ZNotification.success({
+                title: "success",
+                description: "Update album successfully"
+            })
         } catch (error) {
             return error
         }

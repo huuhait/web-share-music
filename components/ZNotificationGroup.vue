@@ -55,6 +55,10 @@ export default class ZNotificationGroup extends Vue {
   overflow: hidden;
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(140, 162, 214, 0.1);
+  
+  .text-up {
+    color: green;
+  }
  
   &-icon {
     margin-right: 12px;

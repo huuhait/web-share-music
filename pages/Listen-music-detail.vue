@@ -51,7 +51,7 @@
                                     <div style="zoom: 10;">
                                         <i class="fas fa-comment-alt" style="color: #d1cdcd;"></i>
                                     </div>
-                                    <span>Chưa có bình luận nào</span>
+                                    <span>Have any other comment</span>
                                 </div>
                             </div>
                             <div v-else>

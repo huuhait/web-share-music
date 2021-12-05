@@ -45,10 +45,10 @@ const createNotification = (type: NotificationType) => {
               <i class={`z-icon-${type}`} />
             </div>
             <div class="z-notification-content">
-              <div class={["z-notification-title"]}>
+              <div class={["z-notification-title", icon_class]}>
                 { options.title }
               </div>
-              <div class="z-notification-description">
+              <div class={["z-notification-description", icon_class]}>
                 { options.description }
               </div>
             </div>

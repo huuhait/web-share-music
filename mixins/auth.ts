@@ -1,6 +1,7 @@
 import { Vue, Component } from 'vue-property-decorator';
 import store from '~/controllers/store';
 import ApiClient from '~/library/ApiClient';
+import ZNotification from '@/library/z-notification'
 @Component({})
 export class AuthMixin extends Vue {
   user: any = store.value.user || ''
@@ -113,7 +114,7 @@ export class AuthMixin extends Vue {
 
   async sendEmailCode() {
     try {
-      await this.$axios.post('http://localhost:3000/api/v2/identity/users/generate_code',
+      await new ApiClient().post('identity/users/generate_code',
       { 
        email: this.user.email
       });
@@ -150,6 +151,10 @@ export class AuthMixin extends Vue {
       await new ApiClient().put('resource/users', form);
       this.user.first_name = this.first_name
       this.user.last_name = this.last_name
+      ZNotification.success({
+        title: "success",
+        description: "Create album successfully"
+      })
     } catch (error) {
       return error
     }

@@ -6,7 +6,7 @@ export default async function (context: Context) {
     try {
       const data = await context.$axios.$get("http://localhost:3000/api/v2/public/musics")
       const dataAlbum = await context.$axios.$get("http://localhost:3000/api/v2/public/albums")
-      const newSongs = await context.$axios.$get("http://localhost:3000/api/v2/public/musics?order_by=created_at&ordering=desc&limit=10")
+      const newSongs = await context.$axios.$get("http://localhost:3000/api/v2/public/musics?order_by=view_count&ordering=desc&limit=10")
 
       const filterPendingData = data.filter((music: any) => music.state !== "pending" )
       const filterPendingNewSongs = newSongs.filter((music: any) => music.state !== "pending" )
@@ -30,7 +30,6 @@ export default async function (context: Context) {
       }
       store.value.trending = arrTrendingMusic
     } catch (error) {
-      console.log(error);
       return error;
     }
   }

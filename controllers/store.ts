@@ -26,6 +26,7 @@ interface Store {
   trending: any[] | null;
   updateAlbum: any;
   newSongs: any[];
+  getLogged: boolean;
 }
 
 const store = ssrRef<Store>({
@@ -52,6 +53,7 @@ const store = ssrRef<Store>({
     music: []
   },
   newSongs: [],
+  getLogged: false,
 })
 
 export default store;

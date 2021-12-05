@@ -36,25 +36,25 @@
                                 <!-- <NuxtLink to="/profile">Tài khoản của tôi</NuxtLink> -->
                             </li>
                             <li class="header__navbar-user-item header__navbar-user-item--separate">
-                                <NuxtLink to="/login" class="header__navbar-user-item-link">Đăng nhập</NuxtLink>
+                                <NuxtLink to="/login" class="header__navbar-user-item-link">Login</NuxtLink>
                             </li>
                             <li class="header__navbar-user-item header__navbar-user-item--separate">
-                                <NuxtLink to="/register" class="header__navbar-user-item-link">Đăng ký</NuxtLink>
+                                <NuxtLink to="/register" class="header__navbar-user-item-link">Register</NuxtLink>
 
                             </li>
                         </ul>
                         <ul v-else class="header__navbar-user-menu">
                             <li class="header__navbar-user-item header__navbar-user-item--separate">
-                                <NuxtLink to="/profile" class="header__navbar-user-item-link">Tài khoản của tôi</NuxtLink>
+                                <NuxtLink to="/profile" class="header__navbar-user-item-link">My profile</NuxtLink>
                             </li>
                             <li v-if="user.state !== 'active'" class="header__navbar-user-item header__navbar-user-item--separate">
-                                <NuxtLink to="/confirm-email" class="header__navbar-user-item-link">Xác nhận email</NuxtLink>
+                                <NuxtLink to="/confirm-email" class="header__navbar-user-item-link">Comfirm email</NuxtLink>
                             </li>
                             <li class="header__navbar-user-item header__navbar-user-item--separate">
-                                <NuxtLink to="/change-password" class="header__navbar-user-item-link">Thay đổi mật khẩu</NuxtLink>
+                                <NuxtLink to="/change-password" class="header__navbar-user-item-link">Change password</NuxtLink>
                             </li>
                             <li class="header__navbar-user-item header__navbar-user-item--separate">
-                                <div class="header__navbar-user-item-link" @click="logout">Đăng xuất</div>
+                                <div class="header__navbar-user-item-link" @click="logout">Logout</div>
                             </li>
                         </ul>
                     </div>
@@ -90,6 +90,7 @@ export default class Header extends Mixins(AuthMixin) {
     }
 
     redirectSearchPage() {
+        if(this.name === '') return 
         if(this.$route.path === "/search/find") {
            this.$router.replace({
                path: "/search/find",

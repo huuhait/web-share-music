@@ -1,6 +1,7 @@
 import { Vue, Component } from 'vue-property-decorator';
 import store from '~/controllers/store';
 import ApiClient from '~/library/ApiClient';
+import ZNotification from '@/library/z-notification'
 
 @Component
 export default class MusicMixin extends Vue {
@@ -69,6 +70,11 @@ export default class MusicMixin extends Vue {
             form.set('music', this.music as File);
             form.set('image', this.image as File);
             await new ApiClient().post("/resource/musics", form )
+            ZNotification.success({
+                title: "success",
+                description: "Create music successfully"
+            })
+            this.$router.push("/")
         } catch (error) {
             return error;            
         }
@@ -76,11 +82,13 @@ export default class MusicMixin extends Vue {
 
     async getAllMusics() {
         try {
-            const data = await this.$axios.$get("http://localhost:3000/api/v2/resource/musics")
-            const newSongs = await this.$axios.$get("http://localhost:3000/api/v2/public/musics?order_by=created_at&ordering=desc&limit=10")
+            const [musicResp1, musicResp2]  = await Promise.all([
+                new ApiClient().get("resource/musics"), 
+                new ApiClient().get("public/musics?order_by=view_count&ordering=desc&limit=10")
+            ])
 
-            const filterPendingData = data.filter((music: any) => music.state !== "pending" )
-            const filterPendingNewSongs = newSongs.filter((music: any) => music.state !== "pending" )
+            const filterPendingData = musicResp1.data.filter((music: any) => music.state !== "pending" )
+            const filterPendingNewSongs = musicResp2.data.filter((music: any) => music.state !== "pending" )
 
             this.musics = await filterPendingData
             store.value.music = await filterPendingData
@@ -92,7 +100,7 @@ export default class MusicMixin extends Vue {
 
     async getMusic(id: number) {
         try {
-            const data = await this.$axios.$get(`http://localhost:3000/api/v2/resource/musics/${id}`)
+            const {data} = await new ApiClient().get(`resource/musics/${id}`)
             store.value.currentSong = await data
         } catch (error) {
             return error
@@ -142,7 +150,7 @@ export default class MusicMixin extends Vue {
 
     async getAllComment() {
         try {
-            const data = await this.$axios.$get(`http://localhost:3000/api/v2/public/musics/${this.currentSong.id}/comments`)
+            const {data} = await new ApiClient().get(`public/musics/${this.currentSong.id}/comments`)
             this.comments = await data
         } catch (error) {
             return error
@@ -222,33 +230,9 @@ export default class MusicMixin extends Vue {
         }
     }
 
-    async createAlbum(idMusic: number) {
-        if(this.name === "") return
-        if(!this.image) return
-
-        try {
-            const form = new FormData()
-            form.append('name', this.name);
-            form.append('description', this.description || "");
-            form.append('image', this.image as File);
-            form.append('musics', JSON.stringify([idMusic]));
-            await new ApiClient().post("/resource/albums", form)
-
-            this.name = ""
-            this.description = null
-            this.privacy = ""
-            this.image = null
-            this.musics = []
-
-            await this.getAlbums()
-        } catch (error) {
-            return error
-        }
-    }
-
     async getAlbums() {
         try {
-            const data = await this.$axios.$get("http://localhost:3000/api/v2/resource/albums")
+            const {data} = await new ApiClient().get("resource/albums")
             this.albums = await data
             store.value.albums = await data
         } catch (error) {
@@ -258,7 +242,7 @@ export default class MusicMixin extends Vue {
 
     async getAlbum(albumId: number) {
         try {
-            const data = await this.$axios.$get(`http://localhost:3000/api/v2/resource/albums/${albumId}`)
+            const {data} = await new ApiClient().get(`resource/albums/${albumId}`)
             return data
         } catch (error) {
             return error
@@ -273,10 +257,16 @@ export default class MusicMixin extends Vue {
             const form = new FormData()
             form.append("name", album.name)
             form.append("musics", JSON.stringify([...Arr, idMusic]))
-            
-            await this.$axios.$put(`http://localhost:3000/api/v2/resource/albums/${album.id}`, form)
 
+            await new ApiClient().put(`resource/albums/${album.id}`, form)
+            
+            ZNotification.success({
+                title: "success",
+                description: "Add music to album successfully"
+            })
             await this.getAlbums()
+            
+
         } catch (error) {
             return error
         }
@@ -284,7 +274,7 @@ export default class MusicMixin extends Vue {
 
     async getAllCommentAlbum() {
         try {
-            const data = await this.$axios.$get(`http://localhost:3000/api/v2/public/albums/${store.value.currentAlbum.id}/comments`)
+            const {data} = await new ApiClient().get(`public/albums/${store.value.currentAlbum.id}/comments`)
             this.commentsAlbum = await data
         } catch (error) {
             return error
@@ -358,7 +348,7 @@ export default class MusicMixin extends Vue {
 
     async deleteAlbum(id: number) {
         try {
-            await this.$axios.$delete(`http://localhost:3000/api/v2/resource/albums/${id}`)
+            await new ApiClient().delete(`resource/albums/${id}`)
             await this.getAlbums()
         } catch (error) {
             return error

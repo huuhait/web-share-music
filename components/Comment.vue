@@ -11,7 +11,7 @@
             {{commentContent}}
         </div>
         <div class="comment-list-item-detail-bot">
-            <div class="comment-list-item-detail-bot-time">12/14</div>
+            <div class="comment-list-item-detail-bot-time">{{formatDateTime()}}</div>
             <div class="comment-list-item-detail-bot-reply" @click="showReplyCmt(indexCmt)">Trả lời</div>
         </div>
     </div>
@@ -92,6 +92,10 @@ export default class Comment extends Mixins(MusicMixin) {
 
     get getSetLikedState() {
         return this.isLike
+    }
+
+    formatDateTime() {
+        return this.commentItem.created_at.slice(0, 10)
     }
 
     setLikedState2() {

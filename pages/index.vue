@@ -4,7 +4,7 @@
         <div class="container-new-top">
             <div class="new-song">
                 <div class="container-title">
-                    <h2 class="container-title-left">New Songs
+                    <h2 class="container-title-left">Top Songs
                         <span class="musicbar" style="width: 20px; height: 20px">
                             <span class="bar1 a1 bg-primary lter"></span>
                             <span class="bar2 a2 bg-info lt"></span>
@@ -60,7 +60,7 @@
                     </h2>
                 </div>
                 <div v-for="(songItem, index) in trendingMusics" :key="index">
-                    <SongItem2 :song="songItem" :type="'trending'" />
+                    <SongItem2 :song="songItem" :index="index" :type="'trending'" />
                 </div>
             </div>
         </div>

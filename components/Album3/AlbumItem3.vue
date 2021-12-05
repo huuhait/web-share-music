@@ -91,6 +91,7 @@ export default class AlbumItem3 extends mixins(MusicMixin) {
         &-name {
             font-size: 18px;
             line-height: 40px;
+            margin-bottom: 12px;
         }
 
         &-author {

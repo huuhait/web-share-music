@@ -1,14 +1,15 @@
 <template>
 <div :class="'profile-container-content-right-info-song ' + isPlaying">
-    <nuxt-link to="/listen-music-detail" class="profile-container-content-right-info-song-avatar" @click="setCurrentSong">
+    <div v-if="index || index === 0" :class="'index-top-song top' + index ">{{index + 1}}</div>
+    <div class="profile-container-content-right-info-song-avatar" @click="setCurrentSong">
         <img :src="'/api/v2/public/musics/' + song.id + '/image'" alt="">
-    </nuxt-link>
-    <div class="profile-container-content-right-info-song-text"  @click="setCurrentSong">
+    </div>
+    <div class="profile-container-content-right-info-song-text"  @click="setCurrentSongAndRedirect">
         <div class="profile-container-content-right-info-song-text-name">{{song.name}}</div>
         <div class="profile-container-content-right-info-song-text-author">{{song.author}}</div>
         <div v-if="type === 'trending'" class="profile-container-content-right-info-song-text-list">
             <div class="profile-container-content-right-info-song-text-list-item">
-                <span style="margin-right: 10px;">Today view: </span><i class="fas fa-play"></i>{{song.today_view_count}}
+                <span style="margin-right: 6px;">Today view: </span><span>{{song.today_view_count}}</span>
             </div>
         </div>
          <div v-else class="profile-container-content-right-info-song-text-list">
@@ -50,6 +51,12 @@ export default class AlbumItem2 extends Mixins(MusicMixin) {
     @Prop() song: any
     @Prop() isPlaying: string
     @Prop() type: string
+    @Prop() index: number
+
+    setCurrentSongAndRedirect() {
+        this.setCurrentSong()
+        this.$router.push("/listen-music-detail")
+    }
 
     setCurrentSong() {
         store.value.currentSong = this.song
@@ -90,6 +97,28 @@ export default class AlbumItem2 extends Mixins(MusicMixin) {
     width: 100%;
     cursor: pointer;
 
+    .index-top-song {
+        display: flex;
+        align-items: center;
+        font-size: 20px;
+        font-weight: 500;
+        color: #7a7a7a;
+        min-width: 26px;
+        justify-content: space-between;
+    }
+
+    .top0 {
+        color: #e74c3c;
+    }
+
+    .top1 {
+        color: #1abc9c
+    }
+
+    .top2 {
+        color: #f39c12;
+    }
+
     &-avatar {
         padding: 0 10px;
         display: flex;
@@ -106,6 +135,10 @@ export default class AlbumItem2 extends Mixins(MusicMixin) {
 
         &-name {
             font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            max-width: 200px;
+            text-overflow: ellipsis;
         }
 
         &-author {

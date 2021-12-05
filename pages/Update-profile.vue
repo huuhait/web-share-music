@@ -31,7 +31,7 @@
                 <AuthInput v-model="last_name" label="Last name" :required="true" :error="last_name_error"/>
                 <AuthInput v-model="bio" label="Bio" :required="true" />
                 <div class="update-profile-container-right-form-btn">
-                    <button type="submit">Cập nhật</button>
+                    <button type="submit">Update</button>
                 </div> 
             </div>
         </div>
