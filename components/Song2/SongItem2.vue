@@ -26,20 +26,27 @@
                 Update
             </div>
         </nuxt-link>
+        <!-- <div class="album-action-update al-item" style="margin-right: 10px;" @click="deleteMusic(song.id)">
+            <div class="modal-box-create-submit">
+                Delete
+            </div>
+        </div> -->
     </div>
 </div>
 </template>
 
 <script lang="ts">
 import {
-    Vue,
     Component,
-    Prop
+    Prop,
+    Mixins
 } from 'vue-property-decorator';
 import store from '~/controllers/store';
+import ApiClient from '~/library/ApiClient';
+import MusicMixin from '~/mixins/music';
 
 @Component
-export default class AlbumItem2 extends Vue {
+export default class AlbumItem2 extends Mixins(MusicMixin) {
     @Prop() song: any
     @Prop() isPlaying: string
     @Prop() type: string
@@ -63,6 +70,15 @@ export default class AlbumItem2 extends Vue {
         if (indexExistSong === -1 || playlistStore.length === 0) {
             playlistStore.push(this.song)
         }
+    }
+
+    async deleteMusic(id: number) {
+        try {
+            await new ApiClient().delete(`resource/musics/${id}`)
+        } catch (error) {
+            return error
+        }
+        
     }
 }
 </script>

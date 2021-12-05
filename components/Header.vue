@@ -28,7 +28,7 @@
                     <div class="header-right-user-link" data-toggle="dropdown">
                         {{user && user.first_name + ' ' + user.last_name}}
                         <span>
-                            <img v-if="user" :src="'api/v2/public/users/' + user.uid + '/avatar'" alt="..."/>
+                            <img v-if="user" :src="'/api/v2/public/users/' + user.uid + '/avatar'" alt="..."/>
                             <img v-else src="/Placeholder.jpg" alt="">
                         </span>
                         <ul v-if="!user" class="header__navbar-user-menu" >
@@ -90,7 +90,16 @@ export default class Header extends Mixins(AuthMixin) {
     }
 
     redirectSearchPage() {
-        this.$router.push(`/search/find?name=${this.name}`)
+        if(this.$route.path === "/search/find") {
+           this.$router.replace({
+               path: "/search/find",
+               query: {
+                   name: this.name
+               }
+           })
+        } else {
+            this.$router.push(`/search/find?name=${this.name}`)
+        }
     }
 }
 </script>

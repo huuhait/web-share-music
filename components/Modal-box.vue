@@ -41,7 +41,7 @@
                 <div v-if="tab_Modal === 0" class="modal-box-list">
                     <div v-for="(album, index) in getAllAlbums" :key="index" class="modal-box-list-item">
                         <div class="album">
-                            <div class="album-avatar"><img src="https://i1.sndcdn.com/artworks-000345673908-5gwig7-t500x500.jpg" alt=""></div>
+                            <div class="album-avatar"><img :src="`http://localhost:3000/api/v2/public/albums/${album.id}/image`" alt=""></div>
                             <div class="album-detail">
                                 <div class="album-detail-name">{{album.name}}</div>
                                 <div class="album-detail-musics">{{album.music.length}} <i class="fas fa-compact-disc"></i></div>
@@ -153,6 +153,9 @@ export default class Modal_box extends Mixins(MusicMixin) {
     }
 
     async updateAlbum() {
+        if(this.name === "") return
+        if(!this.image) return
+        
         try {
             const form = new FormData()
             form.append("name", this.name)

@@ -67,9 +67,18 @@ export default class Name_Search extends Vue {
         return 'music'
     }
 
+    async watchQuery(newQuery: any, oldQuery: any) {
+        if(newQuery.name === oldQuery.name) return
+        const data = await this.$axios.$get(`http://localhost:3000/api/v2/public/find?name=${newQuery.name}`)
+        this.musicsSearch = data.musics
+        this.albumsSearch = data.albums
+         
+        return newQuery.foo && oldQuery.bar
+    }
+
     async asyncData({route, $axios}: Context) {
         try {
-            const data = await $axios.$get(`http://localhost:3000/api/v2/public/find?name=`)
+            const data = await $axios.$get(`http://localhost:3000/api/v2/public/find?name=${route.query.name}`)
             
             return {
                 name: route.query.name,
@@ -80,6 +89,7 @@ export default class Name_Search extends Vue {
             return error
         }
     }
+
 }
 </script>
 

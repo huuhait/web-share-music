@@ -5,7 +5,7 @@ import ApiClient from '~/library/ApiClient';
 @Component
 export default class MusicMixin extends Vue {
     name: string = ""
-    author: string = "Identity unknown"
+    author: string = ""
     description: string | null = null
     state: string = "active"
     music: File
@@ -56,6 +56,10 @@ export default class MusicMixin extends Vue {
     }
 
     async createMusic() {
+        if(this.name === "") return
+        if(this.author === "") return
+        if(!this.image) return
+
         try {
             const form = new FormData()
             form.set('name', this.name);
@@ -219,6 +223,9 @@ export default class MusicMixin extends Vue {
     }
 
     async createAlbum(idMusic: number) {
+        if(this.name === "") return
+        if(!this.image) return
+
         try {
             const form = new FormData()
             form.append('name', this.name);
