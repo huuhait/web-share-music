@@ -33,7 +33,7 @@
                 </div>
                 <AuthInput v-model="description" label="Description" :required="true" />
                 <div class="update-profile-container-right-form-btn">
-                    <button type="submit">Xác nhận</button>
+                    <button type="submit">Submit</button>
                 </div>
             </AuthForm>
         </div>

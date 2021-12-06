@@ -7,9 +7,9 @@
                 class="update-profile-container-right-form" 
                 @submit.prevent="changePassword"
             >    
-                <AuthInput v-model="old_password" type="password" label="Mật khẩu cũ" :required="true" :error="old_password_error"/>
-                <AuthInput v-model="new_password" type="password" label="Mật khẩu mới" :required="true" :error="new_password_error"/>
-                <AuthInput v-model="confirm_password" type="password" label="Nhập lại mật khẩu" :required="true" :error="confirm_password_error"/>
+                <AuthInput v-model="old_password" type="password" label="Old password" :required="true" :error="old_password_error"/>
+                <AuthInput v-model="new_password" type="password" label="New password" :required="true" :error="new_password_error"/>
+                <AuthInput v-model="confirm_password" type="password" label="Re new password" :required="true" :error="confirm_password_error"/>
                 <div class="update-profile-container-right-form-btn">
                     <button type="submit">Submit</button>
                 </div> 

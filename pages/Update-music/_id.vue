@@ -31,7 +31,7 @@
                 </div>
                 <AuthInput v-model="musicItem.description" label="Description" :required="true" />
                 <div class="update-profile-container-right-form-btn">
-                    <button type="submit">Xác nhận</button>
+                    <button type="submit">Submit</button>
                 </div>
             </AuthForm>
         </div>
@@ -42,15 +42,16 @@
 <script lang="ts">
 import {
     Component,
-    Vue
+    Mixins
 } from 'vue-property-decorator'
 import ApiClient from '~/library/ApiClient'
+import MusicMixin from '~/mixins/music'
 
 @Component({
     middleware: "auth",
     components: {},
 })
-export default class music_id extends Vue {
+export default class music_id extends Mixins(MusicMixin) {
     musicItem: any = {}
     url_image: string = ""
     url_music: string = ""
@@ -94,6 +95,7 @@ export default class music_id extends Vue {
             form.append("name", this.musicItem.name)
             form.append("author", this.musicItem.author)
             form.append("description", this.musicItem.description || "")
+            form.append("state", "active")
             if(this.image) {
                 form.append("image", this.image as File)
             }
@@ -101,6 +103,7 @@ export default class music_id extends Vue {
                 form.append("music", this.music as File)
             }
             await new ApiClient().put(`admin/musics/${this.musicItem.id}`, form)
+            await this.getAllMusics()
             await this.$router.push("/profile")
         } catch (error) {
             return error

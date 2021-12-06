@@ -84,7 +84,14 @@
                     <i class="fas fa-forward"></i> Next song
                 </div>
                 <div v-for="(song, index) in playlist" :key="index">
-                    <SongItem2 v-if="song.id === currentSong.id" :song="song" class="hover"/>
+                    <SongItem2 v-if="song.id === currentSong.id" :song="song" class="hover" />
+                    <SongItem2 v-else :song="song" />
+                </div>
+                <div class="container-listen-content-right-title" style="margin-left: 20px;">
+                    Other music
+                </div>
+                <div v-for="(song, index) in recommendMusic" :key="index">
+                    <SongItem2 v-if="song.id === currentSong.id" :song="song" class="hover" />
                     <SongItem2 v-else :song="song" />
                 </div>
             </div>
@@ -95,7 +102,11 @@
 </template>
 
 <script lang="ts">
-import { mixins, Component, Ref } from 'nuxt-property-decorator';
+import {
+    mixins,
+    Component,
+    Ref
+} from 'nuxt-property-decorator';
 import Header from '../components/Header.vue'
 import Footer from '../components/Footer.vue'
 import ListSong2 from '../components/Song2/ListSong2.vue'
@@ -164,8 +175,8 @@ export default class Listen_music_detail extends mixins(MusicMixin) {
 
         store.value.isMusicDetail = "position: relative; top: 0px;"
 
-        if(process.client){
-            if(!store.value.currentSong && localStorage.getItem("currentSong")) {
+        if (process.client) {
+            if (!store.value.currentSong && localStorage.getItem("currentSong")) {
                 const songLocal: any = localStorage.getItem("currentSong")
                 store.value.currentSong = JSON.parse(songLocal);
                 store.value.playlist = [store.value.currentSong]
@@ -199,6 +210,13 @@ export default class Listen_music_detail extends mixins(MusicMixin) {
     get getSetLikedState() {
         return this.isLike
     }
+
+    get recommendMusic() {
+        const trending = store.value.trending
+        const limitMusic = trending?.slice(0, 5)
+        return limitMusic
+    }
+
 }
 </script>
 
@@ -229,7 +247,7 @@ export default class Listen_music_detail extends mixins(MusicMixin) {
 }
 
 .close-modal {
-    position: absolute; 
+    position: absolute;
     top: 20px;
     right: 24px;
 }

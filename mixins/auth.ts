@@ -105,11 +105,14 @@ export class AuthMixin extends Vue {
         email: this.email, 
         password: this.password 
       });
+      ZNotification.success({
+        title: "success",
+        description: "Register successfully"
+      })
       this.$router.push({ path: '/' })
     } catch (error) {
       return error
     }
-    
   }
 
   async sendEmailCode() {
@@ -118,6 +121,10 @@ export class AuthMixin extends Vue {
       { 
        email: this.user.email
       });
+      ZNotification.success({
+        title: "success",
+        description: "send OTP code successfully"
+      })
     } catch (error) {
       return error
     }
@@ -133,6 +140,10 @@ export class AuthMixin extends Vue {
         code: this.code, 
       });
       this.$router.push({ path: '/' })
+      ZNotification.success({
+        title: "success",
+        description: "Confirm email successfully"
+      })
     } catch (error) {
       return(error);
     }
@@ -170,6 +181,10 @@ export class AuthMixin extends Vue {
       { old_password: this.old_password, new_password: this.new_password,
         confirm_password: this.confirm_password
       }); 
+      ZNotification.success({
+        title: "success",
+        description: "Change password successfully"
+      })
       this.$router.push({ path: '/' })
     } catch (error) {
       return error

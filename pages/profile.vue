@@ -62,7 +62,7 @@
                             Upload now
                         </a>
                     </div> -->
-                    <div v-for="(albumItem, index) in getAllAlbums" :key="index"  class="modal-box-list-item">
+                    <div v-for="(albumItem, index) in album" :key="index"  class="modal-box-list-item">
                         <AlbumItem3 :album="albumItem" />
                         
                     </div>
@@ -83,11 +83,6 @@
                             Albums
                         </div>
                     </div>
-                    <!-- <div class="profile-container-content-right-info">
-                        <div class="profile-container-content-right-info-like">
-                            <i class="fas fa-heart"></i>{{likedMusics.length}} like
-                        </div>
-                    </div> -->
                 </div>
             </div>
         </div>

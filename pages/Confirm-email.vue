@@ -2,17 +2,17 @@
 <div class="container" style="padding: 42px">
     <div class="update-profile-container" style="display: flex">
         <div class="update-profile-container-right">
-            <AuthForm title="Xác thực email" @submit.prevent="sendEmailCode">
+            <AuthForm title="Confirm email" @submit.prevent="sendEmailCode">
                 <div style="display: flex">
                     <div>
-                        Mã xác nhận sẽ được gửi đến email 
+                        OTP will send to your email 
                         <span style="color: #6039de">
                             {{user.email}}
                         </span>
                     </div>
                     <div style="min-width: 120px">
                         <button type="submit" class="update-profile-container-right-form-btn-button">
-                            Gửi mã
+                            Send code
                         </button>
                     </div> 
                 </div>
@@ -20,9 +20,9 @@
             <AuthForm class="update-profile-container-right-form" 
                 @submit.prevent="confirmEmail" 
             >
-                <AuthInput v-model="code" label="Xác nhận mật khẩu" :required="true" />
+                <AuthInput v-model="code" label="Confirm your password" :required="true" />
                 <div class="update-profile-container-right-form-btn">
-                    <button type="submit" class="update-profile-container-right-form-btn-button">Xác nhận</button>
+                    <button type="submit" class="update-profile-container-right-form-btn-button">Submit</button>
                 </div> 
             </AuthForm>
         </div>

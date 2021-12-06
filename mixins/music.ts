@@ -100,7 +100,7 @@ export default class MusicMixin extends Vue {
 
     async getMusic(id: number) {
         try {
-            const {data} = await new ApiClient().get(`resource/musics/${id}`)
+            const {data} = await new ApiClient().get(`public/musics/${id}`)
             store.value.currentSong = await data
         } catch (error) {
             return error
@@ -265,8 +265,6 @@ export default class MusicMixin extends Vue {
                 description: "Add music to album successfully"
             })
             await this.getAlbums()
-            
-
         } catch (error) {
             return error
         }
@@ -350,6 +348,10 @@ export default class MusicMixin extends Vue {
         try {
             await new ApiClient().delete(`resource/albums/${id}`)
             await this.getAlbums()
+            ZNotification.success({
+                title: "success",
+                description: "Delete album successfully"
+            })
         } catch (error) {
             return error
         }

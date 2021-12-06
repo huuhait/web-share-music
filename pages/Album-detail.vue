@@ -86,6 +86,13 @@
                     <SongItem2 v-if="song.id === currentSong.id" :song="song" class="hover"/>
                     <SongItem2 v-else :song="song" />
                 </div>
+                <div class="container-listen-content-right-title" style="margin-left: 20px;">
+                    Other music
+                </div>
+                <div v-for="(song, index) in recommendMusic" :key="index">
+                    <SongItem2 v-if="song.id === currentSong.id" :song="song" class="hover" />
+                    <SongItem2 v-else :song="song" />
+                </div>
             </div>
         </div>
     </div>
@@ -173,6 +180,12 @@ export default class Album_detail extends Mixins(MusicMixin) {
 
     get getSetLikedState() {
         return this.isLike
+    }
+
+    get recommendMusic() {
+        const trending = store.value.trending
+        const limitMusic = trending?.slice(0, 5)
+        return limitMusic
     }
 }
 </script>

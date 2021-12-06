@@ -15,7 +15,7 @@ body {
 }
 
 .container {
-  padding: 0 90px;
+  /* padding: 0 90px; */
   background-color: #f2f4f8;
   padding-bottom: 64px;
   height: 100%;

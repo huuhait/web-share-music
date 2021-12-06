@@ -15,7 +15,7 @@
                             <div class="container-music-listen-main-left-top-name-author">{{currentSong.author}}</div>
                         </div>
                         <div class="container-music-listen-main-left-top-info">
-                            <div class="container-music-listen-main-left-top-info-time">1 year ago</div>
+                            <div class="container-music-listen-main-left-top-info-time"></div>
                         </div>
                     </div>
                     <div class="container-music-listen-main-left-bot">

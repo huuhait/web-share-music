@@ -12,7 +12,7 @@
             <AuthForm title="Quên mật khẩu" class="update-profile-container-right-form" @submit.prevent="generate_code">
                 <AuthInput v-model="email" label="Nhập email của bạn" :required="true" />
                 <div class="update-profile-container-right-form-btn">
-                    <button type="submit" class="update-profile-container-right-form-btn-button">Xác nhận</button>
+                    <button type="submit" class="update-profile-container-right-form-btn-button">Submit</button>
                 </div>
             </AuthForm>
         </div>
@@ -20,7 +20,7 @@
             <AuthForm title="Quên mật khẩu" @submit.prevent="reset_password">
                 <div>
                     <div>
-                        Mã xác nhận sẽ được gửi đến email
+                        OTP will send to your email
                         <span style="color: #6039de">
                             {{email}}
                         </span>
@@ -29,7 +29,7 @@
                     <AuthInput v-model="newPassword" label="NHập mật khẩu mới" :required="true" />
                     <div class="update-profile-container-right-form-btn">
                         <button type="submit" class="update-profile-container-right-form-btn-button">
-                            Gửi mã
+                            Send code
                         </button>
                     </div>
                 </div>
