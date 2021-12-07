@@ -245,6 +245,12 @@ export default class Footer extends Vue {
     }
 
     next_song() {
+        if(this.isShuffle) {
+            const musicStore: any = store.value.music
+            const randomMusicIndex = Math.floor(Math.random() * ((musicStore.length -1) - 0 + 1)) + 0;
+            store.value.currentSong = musicStore[randomMusicIndex]
+            return 
+        }
         if (store.value.playlist.length === 0) {
             return this.loadNextSong();
         }
@@ -320,6 +326,12 @@ export default class Footer extends Vue {
     finishSong() {
         const that = this
         this.waveSurfer.on('finish', () => {
+            if(that.isShuffle) {
+                const musicStore: any = store.value.music
+                const randomMusicIndex = Math.floor(Math.random() * ((musicStore.length -1) - 0 + 1)) + 0;
+                store.value.currentSong = musicStore[randomMusicIndex]
+                return 
+            }
             if (store.value.playlist.length <= 1) {
                 return this.loadNextSong();
             }
